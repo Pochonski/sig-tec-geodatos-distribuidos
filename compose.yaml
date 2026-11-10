@@ -1,0 +1,73 @@
+x-database: &database
+  image: postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095
+  environment:
+    POSTGRES_DB: sig_tec
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: ${SIGTEC_ADMIN_PASSWORD:?Set SIGTEC_ADMIN_PASSWORD in .env}
+    POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+  command:
+    - postgres
+    - -c
+    - wal_level=logical
+    - -c
+    - max_replication_slots=12
+    - -c
+    - max_wal_senders=12
+    - -c
+    - max_logical_replication_workers=8
+    - -c
+    - max_worker_processes=12
+    - -c
+    - max_prepared_transactions=10
+  healthcheck:
+    test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -U postgres -d sig_tec"]
+    interval: 5s
+    timeout: 3s
+    retries: 20
+
+services:
+  central:
+    <<: *database
+    ports:
+      - 127.0.0.1:55430:5432
+    volumes:
+      - central_data:/var/lib/postgresql/data
+
+  cartago:
+    <<: *database
+    ports:
+      - 127.0.0.1:55431:5432
+    volumes:
+      - cartago_data:/var/lib/postgresql/data
+
+  san_carlos:
+    <<: *database
+    ports:
+      - 127.0.0.1:55433:5432
+    volumes:
+      - san_carlos_data:/var/lib/postgresql/data
+
+  bootstrap:
+    image: postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095
+    profiles: [tools]
+    entrypoint: [bash]
+    command: [/db/bootstrap.sh]
+    environment:
+      PGPASSWORD: ${SIGTEC_ADMIN_PASSWORD:?Set SIGTEC_ADMIN_PASSWORD in .env}
+      SIGTEC_CARTAGO_PASSWORD: ${SIGTEC_CARTAGO_PASSWORD:?Set SIGTEC_CARTAGO_PASSWORD in .env}
+      SIGTEC_SAN_CARLOS_PASSWORD: ${SIGTEC_SAN_CARLOS_PASSWORD:?Set SIGTEC_SAN_CARLOS_PASSWORD in .env}
+      SIGTEC_REPLICATION_PASSWORD: ${SIGTEC_REPLICATION_PASSWORD:?Set SIGTEC_REPLICATION_PASSWORD in .env}
+    depends_on:
+      central:
+        condition: service_healthy
+      cartago:
+        condition: service_healthy
+      san_carlos:
+        condition: service_healthy
+    volumes:
+      - ./db:/db:ro
+
+volumes:
+  central_data:
+  cartago_data:
+  san_carlos_data:
