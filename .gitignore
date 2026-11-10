@@ -1,0 +1,25 @@
+# Material del curso
+/Tercer Proyecto Enunciado.pdf
+
+# Credenciales y configuración local
+.env
+.env.*
+!.env.example
+.pgpass
+pgpass.conf
+pg_service.conf
+secrets/
+*.key
+*.p12
+
+# Proyectos locales y base de autenticación de QGIS
+*.qgs
+*.qgz
+*.qgs~
+qgis-auth.db*
+
+# Respaldos y archivos WAL
+backups/
+wal/
+*.dump
+*.backup
