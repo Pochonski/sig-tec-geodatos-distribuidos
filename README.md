@@ -15,9 +15,9 @@ Proyecto de Bases de Datos II del Tecnológico de Costa Rica. SIG-TEC permite co
 - [Diseño y modelo geográfico](docs/diseno.md). Topología, contratos de datos, replicación, acceso y operación administrativa.
 - [Pruebas y demostración](docs/validacion.md). Criterios de aceptación, recuperación, guion del video y pendientes del curso.
 - [Reparto del trabajo](docs/reparto.md). Responsables, ramas, interfaces y entornos de prueba para empezar en paralelo.
-- [Primer corte distribuido](db/README.md). Arranque, cuentas de prueba y validación de `edificios` entre Cartago y San Carlos.
+- [Base distribuida](db/README.md). Arranque de los seis nodos, cuentas de prueba y validación de ocho capas en cinco campus.
 
-La primera prueba de integración conectará `edificios` desde QGIS entre dos campus antes de extender el flujo a las ocho capas y los cinco campus.
+La base se valida primero por SQL y después con el proveedor PostgreSQL de QGIS. El complemento de Joyce agrega el inicio de sesión y la carga automática de capas y estilos al integrar su pull request.
 
 ## Contribución
 
