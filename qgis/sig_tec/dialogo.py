@@ -14,15 +14,20 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from .configuracion import Ajustes, ErrorSesion
+from .sesion import OperacionCancelada
 
 
 class DialogoInicioSesion(QDialog):
-    """Pide la cuenta y ejecuta `al_aceptar(ajustes, usuario, clave)` sin cerrarse si hay un error."""
+    """Pide la cuenta y ejecuta `al_aceptar(ajustes, usuario, clave)` sin cerrarse si hay un error.
+
+    Si `al_aceptar` lanza OperacionCancelada, el diálogo se cierra con `cancelado` en True.
+    """
 
     def __init__(self, ajustes, usuario, al_aceptar, parent=None):
         super().__init__(parent)
         self._al_aceptar = al_aceptar
         self.resultado = None
+        self.cancelado = False
         self.setWindowTitle("Iniciar sesión en SIG-TEC")
         self.setMinimumWidth(380)
 
@@ -81,6 +86,10 @@ class DialogoInicioSesion(QDialog):
             self.mensaje.show()
             self.clave.selectAll()
             self.clave.setFocus()
+            return
+        except OperacionCancelada:
+            self.cancelado = True
+            self.reject()
             return
         finally:
             QApplication.restoreOverrideCursor()

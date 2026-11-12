@@ -30,6 +30,19 @@ from .configuracion import (
 ESTILO_BASE_DATOS = "base de datos"
 ESTILO_LOCAL = "archivo local"
 
+# Marca las capas y grupos que agrega el complemento, aunque se muevan o dupliquen en el proyecto.
+PROPIEDAD_USUARIO = "sig_tec/usuario"
+PROPIEDAD_CAMPUS = "sig_tec/campus_id"
+
+# Respuestas posibles cuando hay ediciones sin guardar en las capas que se van a retirar.
+GUARDAR = "guardar"
+DESCARTAR = "descartar"
+CANCELAR = "cancelar"
+
+
+class OperacionCancelada(Exception):
+    """La persona usuaria canceló; el proyecto queda como estaba."""
+
 
 @dataclass(frozen=True)
 class Sesion:
@@ -195,8 +208,65 @@ def aplicar_estilo(capa_qgis, capa):
     return None
 
 
-def cargar_capas(ajustes, sesion, proyecto=None):
-    """Agrega las ocho vistas del campus en un grupo; si alguna falla, no agrega ninguna."""
+def capas_de_sesion(proyecto):
+    return [capa for capa in proyecto.mapLayers().values() if capa.customProperty(PROPIEDAD_USUARIO) is not None]
+
+
+def capas_con_cambios(capas):
+    return [capa for capa in capas if capa.isEditable() and capa.isModified()]
+
+
+def retirar_capas(proyecto, decidir=None):
+    """Retira todas las capas de SIG-TEC del proyecto y devuelve cuántas eran.
+
+    Si alguna tiene ediciones sin guardar, `decidir(capas)` responde GUARDAR, DESCARTAR o CANCELAR.
+    Sin `decidir`, se cancela. Al cancelar o si falla el guardado, no se retira ninguna capa.
+    """
+    capas = capas_de_sesion(proyecto)
+    pendientes = capas_con_cambios(capas)
+    if pendientes:
+        decision = decidir(pendientes) if decidir else CANCELAR
+        if decision == GUARDAR:
+            fallidas = [capa for capa in pendientes if not capa.commitChanges()]
+            if fallidas:
+                detalle = "; ".join(f"{capa.name()}: {' '.join(capa.commitErrors()[-2:])}" for capa in fallidas)
+                raise ErrorSesion(
+                    "No se pudieron guardar las ediciones de "
+                    + ", ".join(capa.name() for capa in fallidas)
+                    + ". Las capas siguen en el proyecto con sus cambios pendientes.\n\nDetalle: "
+                    + detalle
+                )
+        elif decision == DESCARTAR:
+            for capa in pendientes:
+                capa.rollBack()
+        elif decision == CANCELAR:
+            raise OperacionCancelada()
+        else:
+            raise ValueError(f"decisión desconocida: {decision}")
+
+    for capa in capas:
+        if capa.isEditable():
+            capa.rollBack()
+    proyecto.removeMapLayers([capa.id() for capa in capas])
+
+    for grupo in proyecto.layerTreeRoot().findGroups(True):
+        if grupo.customProperty(PROPIEDAD_USUARIO) is None:
+            continue
+        if grupo.children():
+            # Conserva lo que la persona haya agregado dentro del grupo.
+            grupo.removeCustomProperty(PROPIEDAD_USUARIO)
+        else:
+            grupo.parent().removeChildNode(grupo)
+    return len(capas)
+
+
+def cargar_capas(ajustes, sesion, proyecto=None, decidir=None):
+    """Reemplaza la sesión anterior por las ocho vistas del campus de `sesion`.
+
+    Política: el proyecto tiene una sola sesión de SIG-TEC. Antes de agregar las capas nuevas
+    se retiran todas las anteriores, sin importar la cuenta o el campus (ver `retirar_capas`).
+    Si alguna vista nueva no abre, o si se cancela, el proyecto no cambia.
+    """
     proyecto = proyecto or QgsProject.instance()
     pares = [(capa, crear_capa(ajustes, sesion, capa)) for capa in CAPAS]
     invalidas = [capa.vista for capa, capa_qgis in pares if not capa_qgis.isValid()]
@@ -206,18 +276,15 @@ def cargar_capas(ajustes, sesion, proyecto=None):
             + ", ".join(f"{ESQUEMA_VISTAS}.{vista}" for vista in invalidas)
         )
 
+    retirar_capas(proyecto, decidir)
     if not proyecto.mapLayers():
         proyecto.setCrs(QgsCoordinateReferenceSystem(f"EPSG:{SRID}"))
 
-    raiz = proyecto.layerTreeRoot()
-    nombre_grupo = f"SIG-TEC · {sesion.nombre_campus}"
-    anterior = raiz.findGroup(nombre_grupo)
-    if anterior:
-        proyecto.removeMapLayers([nodo.layerId() for nodo in anterior.findLayers()])
-        raiz.removeChildNode(anterior)
-    grupo = raiz.insertGroup(0, nombre_grupo)
-
+    grupo = proyecto.layerTreeRoot().insertGroup(0, f"SIG-TEC · {sesion.nombre_campus}")
     estilos = {}
+    for objeto in (grupo, *(capa_qgis for _, capa_qgis in pares)):
+        objeto.setCustomProperty(PROPIEDAD_USUARIO, sesion.usuario)
+        objeto.setCustomProperty(PROPIEDAD_CAMPUS, sesion.campus_id)
     for capa, capa_qgis in pares:
         estilos[capa.vista] = aplicar_estilo(capa_qgis, capa)
         proyecto.addMapLayer(capa_qgis, False)

@@ -34,9 +34,10 @@ REVOKE ALL ON FUNCTION auth.mi_campus() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION auth.mi_campus() TO sig_usuario;
 
 CREATE ROLE cartago_prueba LOGIN PASSWORD :'clave_prueba' IN ROLE sig_usuario;
+CREATE ROLE san_jose_prueba LOGIN PASSWORD :'clave_prueba' IN ROLE sig_usuario;
 CREATE ROLE san_carlos_prueba LOGIN PASSWORD :'clave_prueba' IN ROLE sig_usuario;
 CREATE ROLE sin_campus_prueba LOGIN PASSWORD :'clave_prueba' IN ROLE sig_usuario;
-INSERT INTO auth.asignaciones VALUES ('cartago_prueba', 1), ('san_carlos_prueba', 3);
+INSERT INTO auth.asignaciones VALUES ('cartago_prueba', 1), ('san_jose_prueba', 2), ('san_carlos_prueba', 3);
 
 -- Los estilos institucionales se definen aquí y se replican a los campus.
 \ir layer_styles.sql

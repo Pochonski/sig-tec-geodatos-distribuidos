@@ -1,7 +1,7 @@
 """Genera el SQL que publica los estilos QML de SIG-TEC en public.layer_styles del central.
 
-El central replica la tabla a los campus. Para cada vista, el estilo SIG-TEC queda como único
-predeterminado. Ejemplo:
+El central replica la tabla a los campus. Al terminar, cada vista tiene exactamente una fila
+SIG-TEC y es su único estilo predeterminado, aunque antes hubiera duplicados. Ejemplo:
 
     python qgis/herramientas/publicar_estilos.py | docker compose -f qgis/entorno-prueba/compose.yaml \
         exec -T central psql -U postgres -d sig_tec -v ON_ERROR_STOP=1
@@ -38,23 +38,32 @@ def sql_estilo(capa, qml, base_datos):
     )
     descripcion = literal(f"Estilo institucional de {capa.titulo} (qgis/sig_tec/estilos/{capa.vista}.qml)")
     contenido = f"XMLPARSE(DOCUMENT {ETIQUETA}{qml}{ETIQUETA})"
+    nombre = literal(NOMBRE_ESTILO)
     return f"""
 -- {capa.vista}
 UPDATE public.layer_styles SET useasdefault = false
- WHERE {filtro} AND stylename <> {literal(NOMBRE_ESTILO)} AND useasdefault;
+ WHERE {filtro} AND stylename IS DISTINCT FROM {nombre} AND useasdefault IS NOT FALSE;
+DELETE FROM public.layer_styles
+ WHERE {filtro} AND stylename = {nombre}
+   AND id > (SELECT min(id) FROM public.layer_styles WHERE {filtro} AND stylename = {nombre});
 UPDATE public.layer_styles
    SET styleqml = {contenido}, useasdefault = true, description = {descripcion}, update_time = now()
- WHERE {filtro} AND stylename = {literal(NOMBRE_ESTILO)};
+ WHERE {filtro} AND stylename = {nombre};
 INSERT INTO public.layer_styles
   (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, stylename, styleqml, useasdefault, description)
 SELECT {literal(base_datos)}, {literal(ESQUEMA_VISTAS)}, {literal(capa.vista)}, {literal(COLUMNA_GEOMETRIA)},
-       {literal(NOMBRE_ESTILO)}, {contenido}, true, {descripcion}
- WHERE NOT EXISTS (SELECT FROM public.layer_styles WHERE {filtro} AND stylename = {literal(NOMBRE_ESTILO)});
+       {nombre}, {contenido}, true, {descripcion}
+ WHERE NOT EXISTS (SELECT FROM public.layer_styles WHERE {filtro} AND stylename = {nombre});
 """
 
 
 def generar(capas, directorio, base_datos):
-    partes = ["SET client_encoding = 'UTF8';", "BEGIN;"]
+    # El bloqueo impide que dos publicaciones simultáneas inserten la misma fila dos veces.
+    partes = [
+        "SET client_encoding = 'UTF8';",
+        "BEGIN;",
+        "LOCK TABLE public.layer_styles IN SHARE ROW EXCLUSIVE MODE;",
+    ]
     for capa in capas:
         qml = (directorio / f"{capa.vista}.qml").read_text(encoding="utf-8")
         partes.append(sql_estilo(capa, qml, base_datos))

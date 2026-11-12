@@ -48,6 +48,23 @@ services:
       central:
         condition: service_healthy
 
+  san-jose:
+    <<: *postgis
+    environment:
+      <<: *campus-env
+      CAMPUS_ID: 2
+      USUARIO_PRUEBA: san_jose_prueba
+    ports:
+      - "127.0.0.1:${PUERTO_SAN_JOSE:-56432}:5432"
+    volumes:
+      - san-jose-datos:/var/lib/postgresql/data
+      - ./init/campus.sh:/docker-entrypoint-initdb.d/20-campus.sh:ro
+      - ./sql:/sig-sql:ro
+      - ./pruebas:/pruebas:ro
+    depends_on:
+      central:
+        condition: service_healthy
+
   san-carlos:
     <<: *postgis
     environment:
@@ -68,4 +85,5 @@ services:
 volumes:
   central-datos:
   cartago-datos:
+  san-jose-datos:
   san-carlos-datos:

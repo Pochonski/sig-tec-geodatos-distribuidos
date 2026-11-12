@@ -99,9 +99,13 @@ class PruebaEstilos(unittest.TestCase):
 class PruebaPublicacion(unittest.TestCase):
     def test_sql_publica_las_ocho_capas_en_una_transaccion(self):
         sql = publicar_estilos.generar(CAPAS, RAIZ / "sig_tec" / "estilos", "sig_tec")
-        self.assertTrue(sql.startswith("SET client_encoding = 'UTF8';\nBEGIN;"))
+        self.assertTrue(sql.startswith(
+            "SET client_encoding = 'UTF8';\nBEGIN;\nLOCK TABLE public.layer_styles IN SHARE ROW EXCLUSIVE MODE;"
+        ))
         self.assertTrue(sql.rstrip().endswith("COMMIT;"))
         self.assertEqual(sql.count("INSERT INTO public.layer_styles"), 8)
+        # Cada vista elimina los SIG-TEC duplicados antes de actualizar el que conserva.
+        self.assertEqual(sql.count("DELETE FROM public.layer_styles"), 8)
         for capa in CAPAS:
             self.assertIn(f"f_table_name = '{capa.vista}'", sql)
 
