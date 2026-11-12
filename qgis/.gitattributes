@@ -1,0 +1,4 @@
+# Los scripts se ejecutan dentro de contenedores Linux.
+*.sh text eol=lf
+*.sql text eol=lf
+*.qml text eol=lf

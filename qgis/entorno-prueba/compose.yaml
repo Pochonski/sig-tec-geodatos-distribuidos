@@ -1,0 +1,89 @@
+# Entorno aislado para probar el complemento de QGIS sin depender de la base común.
+# El central y los campus son simulaciones mínimas del contrato descrito en docs/diseno.md.
+name: sig-tec-qgis
+
+x-postgis: &postgis
+  image: postgis/postgis:17-3.6
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d sig_tec"]
+    interval: 5s
+    timeout: 3s
+    retries: 20
+
+x-campus-env: &campus-env
+  POSTGRES_DB: sig_tec
+  POSTGRES_PASSWORD: ${CLAVE_ADMIN:-admin-prueba}
+  CLAVE_PRUEBA: ${CLAVE_PRUEBA:-sigtec-prueba}
+  CLAVE_REPLICADOR: ${CLAVE_REPLICADOR:-replicador-prueba}
+
+services:
+  central:
+    <<: *postgis
+    command: ["postgres", "-c", "wal_level=logical"]
+    environment:
+      <<: *campus-env
+    ports:
+      - "127.0.0.1:${PUERTO_BASE:-56430}:5432"
+    volumes:
+      - central-datos:/var/lib/postgresql/data
+      - ./init/central.sh:/docker-entrypoint-initdb.d/20-central.sh:ro
+      - ./sql:/sig-sql:ro
+      - ./pruebas:/pruebas:ro
+
+  cartago:
+    <<: *postgis
+    environment:
+      <<: *campus-env
+      CAMPUS_ID: 1
+      USUARIO_PRUEBA: cartago_prueba
+    ports:
+      - "127.0.0.1:${PUERTO_CARTAGO:-56431}:5432"
+    volumes:
+      - cartago-datos:/var/lib/postgresql/data
+      - ./init/campus.sh:/docker-entrypoint-initdb.d/20-campus.sh:ro
+      - ./sql:/sig-sql:ro
+      - ./pruebas:/pruebas:ro
+    depends_on:
+      central:
+        condition: service_healthy
+
+  san-jose:
+    <<: *postgis
+    environment:
+      <<: *campus-env
+      CAMPUS_ID: 2
+      USUARIO_PRUEBA: san_jose_prueba
+    ports:
+      - "127.0.0.1:${PUERTO_SAN_JOSE:-56432}:5432"
+    volumes:
+      - san-jose-datos:/var/lib/postgresql/data
+      - ./init/campus.sh:/docker-entrypoint-initdb.d/20-campus.sh:ro
+      - ./sql:/sig-sql:ro
+      - ./pruebas:/pruebas:ro
+    depends_on:
+      central:
+        condition: service_healthy
+
+  san-carlos:
+    <<: *postgis
+    environment:
+      <<: *campus-env
+      CAMPUS_ID: 3
+      USUARIO_PRUEBA: san_carlos_prueba
+    ports:
+      - "127.0.0.1:${PUERTO_SAN_CARLOS:-56433}:5432"
+    volumes:
+      - san-carlos-datos:/var/lib/postgresql/data
+      - ./init/campus.sh:/docker-entrypoint-initdb.d/20-campus.sh:ro
+      - ./sql:/sig-sql:ro
+      - ./pruebas:/pruebas:ro
+    depends_on:
+      central:
+        condition: service_healthy
+
+volumes:
+  central-datos:
+  cartago-datos:
+  san-jose-datos:
+  san-carlos-datos:
