@@ -1,0 +1,166 @@
+{
+  "executed_at_utc": "2026-11-13T05:41:01.867640+00:00",
+  "base_commit": "e49c166ca989ce02d53bfa09d9b22d64e045b31b",
+  "source_note": "Cambios de ops/ sin commit; ejecutar el comando para regenerar evidencia.",
+  "command": "ops/.venv/bin/python -B ops/test_recovery.py",
+  "python": "3.13.5",
+  "psycopg": "3.3.9",
+  "servers": {
+    "central": [
+      "17.11 (Debian 17.11-1.pgdg13+2)",
+      "3.6.4"
+    ],
+    "cartago": [
+      "17.11 (Debian 17.11-1.pgdg13+2)",
+      "3.6.4"
+    ]
+  },
+  "success": true,
+  "tests": 9,
+  "duration_seconds": 7.57,
+  "protected_rows_before": {
+    "ops.requests": 17,
+    "ops.decisions": 17,
+    "ops.audit": 13,
+    "ops.applied_operations": 13,
+    "cartago.edificios": 18
+  },
+  "scenarios": [
+    {
+      "scenario": "test_after_both_prepare_before_decision",
+      "operation_id": "74baebc0-34b9-477d-b485-f56024f11faa",
+      "building_id": 62655085193676,
+      "decision": "ABORT",
+      "resolved": [
+        "cartago",
+        "central"
+      ],
+      "audit_rows": 0,
+      "campus_markers": 0,
+      "prepared_transactions": 0,
+      "name": "Fixture recuperación 74baebc0-34b9-477d-b485-f56024f11faa",
+      "retries_unchanged": true
+    },
+    {
+      "scenario": "test_after_commit_decision",
+      "operation_id": "12644bde-bab7-42fa-abb7-2564158dec28",
+      "building_id": 396950832941091,
+      "decision": "COMMIT",
+      "resolved": [
+        "cartago",
+        "central"
+      ],
+      "audit_rows": 1,
+      "campus_markers": 1,
+      "prepared_transactions": 0,
+      "name": "Recuperado Cartago 'ñ' 12644bde-bab7-42fa-abb7-2564158dec28",
+      "retries_unchanged": true
+    },
+    {
+      "scenario": "test_after_first_prepare",
+      "operation_id": "093fd5f3-90c2-4d40-bd41-fefc56ca1e66",
+      "building_id": 8342160699026,
+      "decision": "ABORT",
+      "resolved": [
+        "cartago"
+      ],
+      "audit_rows": 0,
+      "campus_markers": 0,
+      "prepared_transactions": 0,
+      "name": "Fixture recuperación 093fd5f3-90c2-4d40-bd41-fefc56ca1e66",
+      "retries_unchanged": true
+    },
+    {
+      "scenario": "test_after_only_one_commit",
+      "operation_id": "2ead7a25-9301-4b28-8dd5-af97898b0933",
+      "building_id": 270733263622201,
+      "decision": "COMMIT",
+      "resolved": [
+        "central"
+      ],
+      "audit_rows": 1,
+      "campus_markers": 1,
+      "prepared_transactions": 0,
+      "name": "Recuperado Cartago 'ñ' 2ead7a25-9301-4b28-8dd5-af97898b0933",
+      "retries_unchanged": true
+    },
+    {
+      "scenario": "test_central_inaccessible_with_commit",
+      "operation_id": "6971683d-e4cb-4e68-8047-29afde78fe3d",
+      "building_id": 469381710605596,
+      "decision": "COMMIT",
+      "resolved": [
+        "cartago",
+        "central"
+      ],
+      "audit_rows": 1,
+      "campus_markers": 1,
+      "prepared_transactions": 0,
+      "name": "Recuperado Cartago 'ñ' 6971683d-e4cb-4e68-8047-29afde78fe3d",
+      "retries_unchanged": true
+    },
+    {
+      "scenario": "test_central_inaccessible_without_decision",
+      "operation_id": "070917e1-507b-48f3-a184-11da0f025545",
+      "building_id": 60143288316741,
+      "decision": "ABORT",
+      "resolved": [
+        "cartago",
+        "central"
+      ],
+      "audit_rows": 0,
+      "campus_markers": 0,
+      "prepared_transactions": 0,
+      "name": "Fixture recuperación 070917e1-507b-48f3-a184-11da0f025545",
+      "retries_unchanged": true
+    },
+    {
+      "scenario": "test_concurrent_recovery",
+      "operation_id": "d1d2eadb-b7b5-4e0c-922a-eb5dbfb2a453",
+      "building_id": 321396201229886,
+      "decision": "COMMIT",
+      "resolved": [],
+      "audit_rows": 1,
+      "campus_markers": 1,
+      "prepared_transactions": 0,
+      "name": "Recuperado Cartago 'ñ' d1d2eadb-b7b5-4e0c-922a-eb5dbfb2a453",
+      "retries_unchanged": true
+    },
+    {
+      "scenario": "test_missing_branch_requires_reconciliation",
+      "operation_id": "552a74ac-fc96-4e5d-8439-59b3d731a780",
+      "building_id": 57136334992366,
+      "decision": "COMMIT",
+      "resolved": [
+        "cartago",
+        "central"
+      ],
+      "audit_rows": 1,
+      "campus_markers": 1,
+      "prepared_transactions": 0,
+      "name": "Recuperado Cartago 'ñ' 552a74ac-fc96-4e5d-8439-59b3d731a780",
+      "retries_unchanged": true
+    },
+    {
+      "scenario": "test_uncertain_abort_acknowledgement",
+      "operation_id": "20a67a02-4bc7-4e19-b77f-2654169e8e97",
+      "building_id": 165538726169931,
+      "decision": "ABORT",
+      "resolved": [
+        "cartago",
+        "central"
+      ],
+      "audit_rows": 0,
+      "campus_markers": 0,
+      "prepared_transactions": 0,
+      "name": "Fixture recuperación 20a67a02-4bc7-4e19-b77f-2654169e8e97",
+      "retries_unchanged": true
+    }
+  ],
+  "fault_methods": {
+    "checkpoints": "os._exit(86) en un proceso hijo; PostgreSQL y Docker no se detienen.",
+    "unreachable_central": "TCP a un puerto reservado sin listener, solo en el worker.",
+    "uncertain_abort": "ABORT real confirmado por PostgreSQL; se oculta su respuesta al recuperador.",
+    "missing_branch": "Lectura simulada de rama ausente; no se destruyen ramas con COMMIT."
+  }
+}
