@@ -1,5 +1,9 @@
 # Respaldos de Central y Cartago
 
+Actualización: backup.py usa el inventario SIGTEC_OPS_CONFIG y admite los seis
+nodos sin modificar sus tablas. Se verificaron los seis dumps y respaldos físicos
+y se restauraron lógicamente en aislamiento. Ver [INTEGRACION.md](INTEGRACION.md).
+
 Usar los contenedores ya activos de `sig-tec-ops`, PostgreSQL 17 y las
 dependencias de `ops/requirements.txt`. El script lee las contraseñas
 administrativas existentes de `ops/.env`; no genera ni cambia credenciales.
@@ -171,8 +175,10 @@ La ejecución registrada en [backup-results.json](backup-results.json) restauró
 las solicitudes, decisiones, auditorías y edificios, además de las tablas de
 extensiones. No hay aún geometrías en la tabla mínima `cartago.edificios`, por
 lo que no se afirma haber probado la restauración de geometrías del modelo
-completo. No se implementan archivado WAL, PITR, reincorporación ni políticas
-automáticas de retención/borrado.
+completo. El archivado WAL posterior se documenta en [WAL.md](WAL.md); no modifica
+los respaldos anteriores ni garantiza una cadena continua hasta ellos. No se
+reincorporan nodos ni se aplican políticas automáticas de retención/borrado.
+La prueba PITR posterior y su respaldo físico nuevo se describen en [PITR.md](PITR.md).
 
 Referencias: [pg_dump](https://www.postgresql.org/docs/17/app-pgdump.html),
 [pg_basebackup](https://www.postgresql.org/docs/17/app-pgbasebackup.html) y

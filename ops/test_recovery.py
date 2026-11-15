@@ -15,6 +15,7 @@ import psycopg
 from psycopg import sql
 
 import recover
+import runtime
 import rename
 from verify import inventory
 
@@ -75,10 +76,13 @@ class RecoveryIntegration(unittest.TestCase):
         self.building = (uuid4().int % 10**14) * 5 + 1
         self.original = f'Fixture recuperación {self.operation}'
         self.name = f"Recuperado Cartago 'ñ' {self.operation}"
-        with psycopg.connect(host='127.0.0.1', port=57431, dbname='sig_tec',
-                             user='postgres', password=self.values['OPS_CARTAGO_PASSWORD']) as admin:
-            admin.execute('INSERT INTO cartago.edificios (id, campus_id, nombre) VALUES (%s, 1, %s)',
-                          (self.building, self.original))
+        with psycopg.connect(host='127.0.0.1', port=rename.CAMPUSES[1].port, dbname='sig_tec',
+                             user='postgres', password=runtime.password('cartago','admin',self.values)) as admin:
+            if runtime.config().get('integrated'):
+                self.building=admin.execute("INSERT INTO sig.edificios (nombre,geom) VALUES (%s,public.ST_MakeEnvelope(500000,1100000,500002,1100002,8908)) RETURNING id", (self.original,)).fetchone()[0]
+            else:
+                admin.execute('INSERT INTO cartago.edificios (id, campus_id, nombre) VALUES (%s, 1, %s)',
+                              (self.building, self.original))
 
     def tearDown(self):
         # Ante una aserción fallida, intentar resolver solo el UUID de esta prueba
@@ -90,7 +94,7 @@ class RecoveryIntegration(unittest.TestCase):
 
     def run_script(self, script, *args):
         return subprocess.run([sys.executable, '-B', str(ROOT / script), *map(str, args)],
-                              text=True, capture_output=True, timeout=40)
+                              text=True, encoding='utf-8', capture_output=True, timeout=40)
 
     def crash(self, point):
         proc = self.run_script('fault_worker.py', 'crash', self.operation, self.building, self.name, point)
@@ -293,7 +297,7 @@ if __name__ == '__main__':
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     report = {
         'executed_at_utc': datetime.now(timezone.utc).isoformat(),
-        'base_commit': subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip(),
+        'base_commit': subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True, encoding='utf-8').strip(),
         'source_note': 'Cambios de ops/ sin commit; ejecutar el comando para regenerar evidencia.',
         'command': 'ops/.venv/bin/python -B ops/test_recovery.py',
         'python': sys.version.split()[0], 'psycopg': psycopg.__version__,
@@ -310,5 +314,5 @@ if __name__ == '__main__':
             'missing_branch': 'Lectura simulada de rama ausente; no se destruyen ramas con COMMIT.',
         },
     }
-    (ROOT / 'recovery-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+    (ROOT / 'recovery-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     sys.exit(0 if result.wasSuccessful() else 1)

@@ -1,0 +1,135 @@
+{
+  "executed_at_utc": "2026-11-15T18:56:03.646340+00:00",
+  "platform": "Linux-7.1.13+parrot7-amd64-x86_64-with-glibc2.41",
+  "python": "3.13.5",
+  "project": "sig-tec-rejoin-lab",
+  "base_commit": "f9970e3356f1072f17a4cfa80b0d00dd83b7f64a",
+  "joseph_reference": "f3e1f91e1e61e2f293fac4ba50de209cc0af65ea",
+  "status": "passed_available_linux_checks_windows_pending",
+  "environment_prefix": "SIGTEC_OPS_CONFIG=ops/rejoin-lab/runtime.json",
+  "unit_tests": {
+    "utf8": 6,
+    "archive_wal": 5,
+    "docker_inventory": 1,
+    "pitr_safety": 5,
+    "rejoin_planner": 7,
+    "status": "passed"
+  },
+  "migrations": {
+    "six_nodes_applied": true,
+    "reapplied_with_identical_table_data_and_metadata": true,
+    "minimal_geographic_fixture_skipped": true,
+    "live_utf8_roundtrip": true
+  },
+  "two_phase_after_rejoin": {
+    "status": "passed",
+    "rename_tests": [
+      {
+        "test": "test_concurrent_identical_uuid",
+        "operation_id": "03f42247-969b-4da5-b1ce-db8c9c97b4d3",
+        "building_id": 136,
+        "name": "Prueba 2PC - 03f42247-969b-4da5-b1ce-db8c9c97b4d3 - 'Cartago' ñ",
+        "decision": "COMMIT",
+        "audit_rows": 1,
+        "campus_markers": 1,
+        "prepared_transactions": 0
+      },
+      {
+        "test": "test_identical_retry",
+        "operation_id": "c5242e9f-e683-433b-b428-cfd48bb72989",
+        "building_id": 141,
+        "name": "Prueba 2PC - c5242e9f-e683-433b-b428-cfd48bb72989 - 'Cartago' ñ",
+        "decision": "COMMIT",
+        "audit_rows": 1,
+        "campus_markers": 1,
+        "prepared_transactions": 0
+      },
+      {
+        "test": "test_success",
+        "operation_id": "c0b5e99f-8041-4dd9-97ff-00c167aec018",
+        "building_id": 146,
+        "name": "Prueba 2PC - c0b5e99f-8041-4dd9-97ff-00c167aec018 - 'Cartago' ñ",
+        "decision": "COMMIT",
+        "audit_rows": 1,
+        "campus_markers": 1,
+        "prepared_transactions": 0
+      },
+      {
+        "test": "test_uuid_reused_with_different_data",
+        "operation_id": "d37ec9fa-d274-429d-9132-c034c668b746",
+        "building_id": 151,
+        "name": "Prueba 2PC - d37ec9fa-d274-429d-9132-c034c668b746 - 'Cartago' ñ",
+        "decision": "COMMIT",
+        "audit_rows": 1,
+        "campus_markers": 1,
+        "prepared_transactions": 0
+      }
+    ],
+    "recovery_tests": 9,
+    "evidence": "recovery-results.json"
+  },
+  "five_campus_integration": {
+    "status": "passed",
+    "evidence": "integrated-results.json"
+  },
+  "backups": {
+    "status": "complete",
+    "nodes": [
+      "central",
+      "cartago",
+      "san_jose",
+      "san_carlos",
+      "alajuela",
+      "limon"
+    ],
+    "logical_dump_list_verified": true,
+    "physical_pg_verifybackup": true,
+    "six_isolated_logical_restores_verified": true,
+    "evidence": "backup-results.json"
+  },
+  "wal": {
+    "status": "passed",
+    "nodes": 6,
+    "all_failed_counts_zero": true,
+    "cartago_timeline_after_rejoin": 2,
+    "evidence": "wal-sig-tec-rejoin-lab-results.json"
+  },
+  "pitr": {
+    "status": "passed",
+    "restore_point": {
+      "name": "sig_tec_pitr_56fa338298a540699e75b6b98c7a1e25",
+      "lsn": "0/E000090",
+      "created_at_utc": "2026-11-15T18:39:36.713084+00:00",
+      "backup_end_lsn": "0/D000120"
+    },
+    "evidence": "pitr-results.json"
+  },
+  "rejoin": {
+    "status": "passed",
+    "evidence": "rejoin-execution-results.json"
+  },
+  "fixed_failures": [
+    {
+      "problem": "Control network blocked peer traffic; convergence failed",
+      "resolution": "Separate lab control bridge, bootstrap and integration rechecked"
+    },
+    {
+      "problem": "PITR max_worker_processes=8 below primary=48",
+      "resolution": "Preserve required primary limits in isolated clone; regression and actual PITR passed",
+      "failed_artifacts_preserved": true
+    }
+  ],
+  "pending": [
+    "Windows real: test_windows.ps1 prepared but not executed",
+    "Joseph installation credentials/endpoints and WAL configuration approval",
+    "Production reconciliation authority and cutover window",
+    "Retention budget and eventual retirement of old disabled subscriptions/slots"
+  ],
+  "safety": {
+    "original_sig_tec_ops_untouched": true,
+    "wger_untouched": true,
+    "existing_volumes_backups_wal_preserved": true,
+    "only_old_lab_owner_stopped": true,
+    "no_main_merge": true
+  }
+}

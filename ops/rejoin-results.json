@@ -1,0 +1,280 @@
+{
+  "executed_at_utc": "2026-11-15T04:01:55.485811+00:00",
+  "reference": {
+    "branch": "origin/joseph/cinco-campus-ocho-capas",
+    "commit": "f3e1f91e1e61e2f293fac4ba50de209cc0af65ea",
+    "source_sha256": {
+      "compose.yaml": "6bc04dc7c74467fa45609444051b8c252d025a62a536e1037cadbb47eee479be",
+      "db/schema.sql": "1c189635cdb75aeb3f32dd3a405984d0d279fdb9b18c03cc14a7ec5ec381db3c",
+      "db/seed.sql": "dd9a739a9397d3a1c265af05aa4a11e237955c8cd9e523d1a34914e0a63865c9",
+      "db/publications.sql": "f15c9fef8dcc87ce33d77b88bc4a6196527e139e83a5f8cff4c1dca4c6148e44",
+      "db/subscriptions.sql": "4d4ab078ab0e2c9a01920e4f5b3a0ae39e7be26008b1f75a7bb3edd023b592a4",
+      "db/bootstrap.sh": "4c9f26a231169ddc139c331b6f1776b578292b50d501267c9cc29f819d77b792",
+      "db/slot.sql": "3d4dba0e7b1de1c4bbc8d7c40127ddacf32a1c3226eb2e006a51e083a932141e"
+    },
+    "nodes": [
+      "central",
+      "cartago",
+      "san_jose",
+      "san_carlos",
+      "alajuela",
+      "limon"
+    ],
+    "host_ports": {
+      "central": 55430,
+      "cartago": 55431,
+      "san_jose": 55432,
+      "san_carlos": 55433,
+      "alajuela": 55434,
+      "limon": 55435
+    },
+    "layers": [
+      "edificios",
+      "carreteras",
+      "aceras",
+      "parqueos",
+      "zonas_verdes",
+      "puntos_interes",
+      "iluminacion",
+      "accesibilidad"
+    ],
+    "publications": {
+      "cartago": "pub_cartago_edificios",
+      "san_jose": "pub_san_jose_capas",
+      "san_carlos": "pub_san_carlos_edificios",
+      "alajuela": "pub_alajuela_capas",
+      "limon": "pub_limon_capas"
+    },
+    "central_subscriptions": 5,
+    "tables_per_central_subscription": 8,
+    "campus_subscriptions": 1,
+    "tables_per_campus_subscription": 33,
+    "id_sequence": "<campus>.sigtec_ids",
+    "id_increment": 5,
+    "edificios_columns": [
+      "id",
+      "campus_id",
+      "nombre",
+      "codigo",
+      "area",
+      "pisos",
+      "geom"
+    ],
+    "edificios_geometry": "geometry(Polygon,8908) NOT NULL",
+    "ops_migrations_in_reference": false,
+    "archive_in_reference": false
+  },
+  "read_only": true,
+  "profile": "ops",
+  "plan": {
+    "mode": "dry-run",
+    "database_writes": false,
+    "execution_supported": false,
+    "ready_for_real_rejoin": false,
+    "campus": "cartago",
+    "blockers": [
+      "central: wal_level no es logical",
+      "central: faltan 40 tablas del modelo geográfico de 40 tablas",
+      "central: publicaciones/tablas distintas al contrato",
+      "central: inventario de suscripciones distinto al contrato",
+      "central: sincronización inicial no lista en sub_central_cartago",
+      "central: lista de tablas incorrecta en sub_central_cartago",
+      "central: sincronización inicial no lista en sub_central_san_jose",
+      "central: lista de tablas incorrecta en sub_central_san_jose",
+      "central: sincronización inicial no lista en sub_central_san_carlos",
+      "central: lista de tablas incorrecta en sub_central_san_carlos",
+      "central: sincronización inicial no lista en sub_central_alajuela",
+      "central: lista de tablas incorrecta en sub_central_alajuela",
+      "central: sincronización inicial no lista en sub_central_limon",
+      "central: lista de tablas incorrecta en sub_central_limon",
+      "central: inventario de slots distinto al contrato",
+      "cartago: wal_level no es logical",
+      "cartago: falta la secuencia compartida cartago.sigtec_ids",
+      "cartago: faltan 39 tablas del modelo geográfico de 40 tablas",
+      "cartago: cartago.edificios carece de geom NOT NULL",
+      "cartago: publicaciones/tablas distintas al contrato",
+      "cartago: inventario de suscripciones distinto al contrato",
+      "cartago: sincronización inicial no lista en sub_cartago_central",
+      "cartago: lista de tablas incorrecta en sub_cartago_central",
+      "cartago: inventario de slots distinto al contrato",
+      "san_jose: nodo no configurado",
+      "san_carlos: nodo no configurado",
+      "alajuela: nodo no configurado",
+      "limon: nodo no configurado",
+      "Falta el máximo histórico aprobado de IDs emitidos, incluidos borrados.",
+      "Falta inspección de la copia restaurada, aislada y activa solo para revisión"
+    ],
+    "mandatory_manual_gates": [
+      "Fencing verificado del propietario anterior; inaccesibilidad TCP no basta",
+      "Reconciliación aprobada de cambios desde PITR en las ocho capas, incluidos borrados",
+      "Decisiones/marcadores 2PC reconciliados sin inventar efectos",
+      "Máximo histórico de IDs y ajuste monotónico validados con escritores detenidos",
+      "Plan explícito de tablas, slots y suscripciones afectadas; aprobación antes de vaciar/copiar"
+    ],
+    "two_phase": {
+      "checked": true,
+      "requests": 43,
+      "pending_or_inconsistent": 0,
+      "orphan_uuids": 0,
+      "duplicate_or_wrong_campus_markers": 0,
+      "missing_campus_evidence": [],
+      "note": "Evidencia actual; no prueba por sí sola el estado anterior/posterior a PITR."
+    },
+    "restored_two_phase": null,
+    "sequence_proposal": {
+      "candidate": null,
+      "blocker": "Falta el máximo histórico aprobado de IDs emitidos, incluidos borrados."
+    },
+    "table_mismatches": [],
+    "topology": {
+      "upstream": {
+        "subscriber": "central",
+        "subscription": "sub_central_cartago",
+        "publisher": "cartago",
+        "slot": "slot_central_cartago",
+        "tables": 8
+      },
+      "incoming_remote_copies": {
+        "subscriber": "cartago",
+        "subscription": "sub_cartago_central",
+        "publisher": "central",
+        "slot": "slot_cartago_central",
+        "tables": 33
+      },
+      "other_campuses": [
+        "san_jose",
+        "san_carlos",
+        "alajuela",
+        "limon"
+      ]
+    }
+  },
+  "nodes": {
+    "central": {
+      "reachable": true,
+      "settings": {
+        "read_only": "on",
+        "wal_level": "replica",
+        "max_prepared": "10",
+        "archive_mode": "on",
+        "in_recovery": false
+      },
+      "prepared_count": 0,
+      "subscriptions": [],
+      "subscription_relations": [],
+      "subscription_workers": [],
+      "slots": [],
+      "publication_tables": [],
+      "origins": [],
+      "roles": [
+        {
+          "rolname": "sig_tec_ops_cli",
+          "rolcanlogin": true,
+          "rolsuper": false,
+          "rolcreatedb": false,
+          "rolcreaterole": false,
+          "rolreplication": false,
+          "rolbypassrls": false
+        }
+      ],
+      "tables": {},
+      "duplicate_ids": {},
+      "sequence": null,
+      "cli_privileges": {
+        "connect": true
+      },
+      "ops_counts": {
+        "ops.audit": 31,
+        "ops.decisions": 43,
+        "ops.requests": 43
+      }
+    },
+    "cartago": {
+      "reachable": true,
+      "settings": {
+        "read_only": "on",
+        "wal_level": "replica",
+        "max_prepared": "10",
+        "archive_mode": "on",
+        "in_recovery": false
+      },
+      "prepared_count": 0,
+      "subscriptions": [],
+      "subscription_relations": [],
+      "subscription_workers": [],
+      "slots": [],
+      "publication_tables": [],
+      "origins": [],
+      "roles": [
+        {
+          "rolname": "sig_tec_ops_cli",
+          "rolcanlogin": true,
+          "rolsuper": false,
+          "rolcreatedb": false,
+          "rolcreaterole": false,
+          "rolreplication": false,
+          "rolbypassrls": false
+        }
+      ],
+      "tables": {
+        "cartago.edificios": {
+          "count": 44,
+          "sha256": "edb83dcc420120f45e7f3b8029444462627fd655fc4daf67f2f9a249fc2aec48",
+          "columns": [
+            {
+              "attname": "id",
+              "type": "bigint",
+              "attnotnull": true
+            },
+            {
+              "attname": "campus_id",
+              "type": "smallint",
+              "attnotnull": true
+            },
+            {
+              "attname": "nombre",
+              "type": "text",
+              "attnotnull": true
+            }
+          ],
+          "constraints": [
+            {
+              "conname": "edificios_campus_id_check",
+              "definition": "CHECK ((campus_id = 1))"
+            },
+            {
+              "conname": "edificios_pkey",
+              "definition": "PRIMARY KEY (id)"
+            }
+          ],
+          "max_id": 469381710605596,
+          "invalid_ids": 0
+        }
+      },
+      "duplicate_ids": {
+        "cartago": 0
+      },
+      "sequence": null,
+      "cli_privileges": {
+        "connect": true,
+        "update_nombre": true,
+        "update_id": false,
+        "update_campus": false,
+        "insert_table": false,
+        "delete_table": false
+      },
+      "ops_counts": {
+        "ops.applied_operations": 31
+      }
+    }
+  },
+  "restored_node": null,
+  "existing_containers_unchanged": true,
+  "tests": {
+    "command": "ops/.venv/bin/python -B ops/test_rejoin.py",
+    "pure_tests": 7,
+    "live_read_only_tests": 1,
+    "result": "passed",
+    "all_source_data_and_prepared_unchanged": true
+  }
+}

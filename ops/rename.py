@@ -9,6 +9,8 @@ from pathlib import Path
 import sys
 from uuid import UUID
 
+import runtime
+
 import psycopg
 from psycopg import sql
 
@@ -29,32 +31,28 @@ class Node:
     name: str
     port: int
     schema: str | None = None
+    host: str = '127.0.0.1'
 
 
-CENTRAL = Node('central', 57430)
-# Ampliar este registro al integrar otros campus. No aceptar esquemas del usuario.
-CAMPUSES = {1: Node('cartago', 57431, 'cartago')}
+_RUNTIME = runtime.config()
+CENTRAL = Node('central', _RUNTIME['nodes']['central']['port'], host=_RUNTIME['nodes']['central']['host'])
+CAMPUSES = {key:Node(name,_RUNTIME['nodes'][name]['port'],name,_RUNTIME['nodes'][name]['host'])
+            for key,name in runtime.CAMPUSES.items() if name in _RUNTIME['nodes']}
 
 
 def configuration():
-    """Solo lectura: no genera ni modifica credenciales durante una operación."""
     try:
-        values = {}
-        for line in (ROOT / '.env').read_text().splitlines():
-            if line.strip() and not line.lstrip().startswith('#'):
-                key, value = line.split('=', 1)
-                values[key.strip()] = value.strip().strip('\"\'')
-        return values
-    except (OSError, ValueError):
-        raise OperationError('No se pudo leer ops/.env.') from None
+        return runtime.values()
+    except (OSError, ValueError, RuntimeError):
+        raise OperationError('No se pudo leer la configuración local UTF-8.') from None
 
 
 def connect(node, values):
-    password = values.get(f'OPS_{node.name.upper()}_CLI_PASSWORD')
+    password = runtime.password(node.name,'cli',values)
     if not password:
         raise OperationError(f'Falta la contraseña local de CLI para {node.name}.')
     conn = psycopg.connect(
-        host='127.0.0.1', port=node.port, dbname='sig_tec', user=ROLE,
+        host=node.host, port=node.port, dbname='sig_tec', user=ROLE,
         password=password, autocommit=True, connect_timeout=5,
         application_name='sig-tec-ops-rename',
         options='-c statement_timeout=15000 -c lock_timeout=10000 -c synchronous_commit=on',
@@ -117,7 +115,7 @@ def rename(operation, campus_id, building_id, new_name, values=None, *, _checkpo
     values = configuration() if values is None else values
     node = CAMPUSES[campus_id]
     for target in (CENTRAL, node):
-        if not values.get(f'OPS_{target.name.upper()}_CLI_PASSWORD'):
+        if not values.get(runtime.config()['nodes'][target.name]['cli_password_env']):
             raise OperationError(f'Falta la contraseña local de CLI para {target.name}.')
     payload = (campus_id, building_id, new_name)
     try:

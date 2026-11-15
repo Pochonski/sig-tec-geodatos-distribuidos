@@ -1,0 +1,11 @@
+{
+  "purpose": "Copia descartable de seis nodos; no es un inventario validado de producción",
+  "nodes": {
+    "central": {"host": "127.0.0.1", "port": 58430, "user": "postgres", "password_env": "SIGTEC_ADMIN_PASSWORD"},
+    "cartago": {"host": "127.0.0.1", "port": 58431, "user": "postgres", "password_env": "SIGTEC_ADMIN_PASSWORD"},
+    "san_jose": {"host": "127.0.0.1", "port": 58432, "user": "postgres", "password_env": "SIGTEC_ADMIN_PASSWORD"},
+    "san_carlos": {"host": "127.0.0.1", "port": 58433, "user": "postgres", "password_env": "SIGTEC_ADMIN_PASSWORD"},
+    "alajuela": {"host": "127.0.0.1", "port": 58434, "user": "postgres", "password_env": "SIGTEC_ADMIN_PASSWORD"},
+    "limon": {"host": "127.0.0.1", "port": 58435, "user": "postgres", "password_env": "SIGTEC_ADMIN_PASSWORD"}
+  }
+}

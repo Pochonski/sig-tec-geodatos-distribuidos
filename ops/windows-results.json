@@ -1,0 +1,9 @@
+{
+  "platform": "Windows",
+  "status": "pending",
+  "executed": false,
+  "reason": "No se dispone de un entorno Windows real en esta sesión. Las pruebas automatizadas solo se ejecutaron en Parrot/Linux.",
+  "portable_suite": "ops/test_utf8.py",
+  "windows_runner": "ops/test_windows.ps1",
+  "coverage_prepared": ["UTF-8 por bytes a Docker", "UTF-8 BOM y CRLF", "tildes, ñ, euro, japonés y emoji", "rechazo de UTF-8 inválido", "ausencia de credenciales en diagnósticos"]
+}

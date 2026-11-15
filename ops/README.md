@@ -1,4 +1,11 @@
-# Entorno aislado de operaciones
+# Operaciones SIG-TEC
+
+Para perfiles Parrot/Windows, seis nodos y la reincorporación real ensayada, ver
+[INTEGRACION.md](INTEGRACION.md) y [resultados](integration-validation.json).
+La validación Windows real sigue pendiente. Los comandos siguientes conservan
+el perfil aislado predeterminado, salvo que se indique SIGTEC_OPS_CONFIG.
+
+## Entorno aislado de operaciones
 
 Dos instancias PostgreSQL 17 con PostGIS 3.6 y base `sig_tec`:
 
@@ -287,6 +294,27 @@ La prueba de restauración lógica usa instancias temporales sin red ni puertos.
 Ver [BACKUPS.md](BACKUPS.md) para configuración, formatos, comandos de
 restauración lógica y física, alcance y resultados de la validación.
 
-No se implementan archivado WAL, PITR ni reincorporación. La recuperación 2PC
-no reconstruye ramas perdidas ni ofrece atomicidad de lectura entre nodos
-durante la segunda fase.
+## Archivado WAL
+
+Central y Cartago archivan sus segmentos en volúmenes persistentes separados
+de PGDATA. Ver [WAL.md](WAL.md) para la aplicación vigilada, el script de copia
+sin sobrescrituras, comandos de inspección, pruebas y [resultados](wal-results.json).
+`wal.py preflight` debe pasar antes de aplicar cambios o ejecutar pruebas.
+
+## PITR aislado de Cartago
+
+`pitr.py run` crea un fixture propio, genera un respaldo físico nuevo y recupera
+una copia hasta un punto nombrado. `test_pitr.py` ejecuta las comprobaciones de
+seguridad y la integración real. Ver [PITR.md](PITR.md) y
+[pitr-results.json](pitr-results.json). Los originales permanecen activos y la
+copia no tiene red; el archivo WAL se monta en solo lectura.
+
+## Preparación de reincorporación
+
+Ver [REINCORPORACION.md](REINCORPORACION.md) para la comparación con la rama de
+seis nodos de Joseph, dependencias, procedimiento sujeto a aprobación y ensayos
+pendientes. `rejoin.py dry-run` inspecciona sin escrituras y no tiene modo apply;
+no sustituye nodos ni altera secuencias o canales de replicación.
+
+La reincorporación real de laboratorio se completó; su aprobación para producción sigue pendiente. Ver INTEGRACION.md. La recuperación 2PC no reconstruye
+ramas perdidas ni ofrece atomicidad de lectura entre nodos durante la segunda fase.

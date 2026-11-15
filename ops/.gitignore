@@ -1,4 +1,11 @@
 .venv/
+.venv-*/
 __pycache__/
 test-results.json
 backups/
+.wal-state.json
+wal-test-data/
+pitr-runs/
+pitr-unit-data/
+rejoin-lab/
+.runtime-state/

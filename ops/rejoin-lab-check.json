@@ -1,0 +1,40 @@
+{
+  "checked_at_utc": "2026-11-15T04:01:56.437687+00:00",
+  "reference_commit": "f3e1f91e1e61e2f293fac4ba50de209cc0af65ea",
+  "compose_version": "5.6.0",
+  "configuration_valid": true,
+  "database_started": false,
+  "existing_containers_unchanged": true,
+  "ports": {
+    "central": 58430,
+    "cartago": 58431,
+    "san_jose": 58432,
+    "san_carlos": 58433,
+    "alajuela": 58434,
+    "limon": 58435
+  },
+  "ports_free": {
+    "central": true,
+    "cartago": true,
+    "san_jose": true,
+    "san_carlos": true,
+    "alajuela": true,
+    "limon": true
+  },
+  "volume_names": [
+    "sig-tec-rejoin-lab_alajuela_data",
+    "sig-tec-rejoin-lab_cartago_data",
+    "sig-tec-rejoin-lab_central_data",
+    "sig-tec-rejoin-lab_limon_data",
+    "sig-tec-rejoin-lab_san_carlos_data",
+    "sig-tec-rejoin-lab_san_jose_data"
+  ],
+  "lab_containers_already_exist": false,
+  "missing_before_runtime_test": [
+    "Materializar la fuente fijada en ops/rejoin-lab/source",
+    "Crear ops/rejoin-lab/.env con las siete variables SIGTEC de Joseph",
+    "Aprobar creación y bootstrap de un stack nuevo aislado de seis nodos",
+    "Integrar migraciones ops sin fixtures mínimos, rutas de CLI y respaldo/PITR con geometría",
+    "Disponer de una copia restaurada sin red, historial de cambios e IDs emitidos y fencing validado"
+  ]
+}

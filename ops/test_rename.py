@@ -10,6 +10,7 @@ from uuid import uuid4
 
 import psycopg
 
+import runtime
 import rename
 from verify import inventory
 
@@ -35,16 +36,19 @@ class RenameIntegration(unittest.TestCase):
         self.name = f"Prueba 2PC - {self.operation} - 'Cartago' ñ"
         node = rename.CAMPUSES[1]
         with psycopg.connect(host='127.0.0.1', port=node.port, dbname='sig_tec',
-                             user='postgres', password=self.values['OPS_CARTAGO_PASSWORD']) as admin:
-            admin.execute('INSERT INTO cartago.edificios (id, campus_id, nombre) '
-                          'VALUES (%s, 1, %s)', (self.building, 'Fixture CLI 2PC'))
+                             user='postgres', password=runtime.password('cartago','admin',self.values)) as admin:
+            if runtime.config().get('integrated'):
+                self.building=admin.execute("INSERT INTO sig.edificios (nombre,geom) VALUES (%s,public.ST_MakeEnvelope(500000,1100000,500002,1100002,8908)) RETURNING id", ('Fixture CLI 2PC',)).fetchone()[0]
+            else:
+                admin.execute('INSERT INTO cartago.edificios (id, campus_id, nombre) '
+                              'VALUES (%s, 1, %s)', (self.building, 'Fixture CLI 2PC'))
 
     def cli(self, name=None, building=None):
         proc = subprocess.run([
             sys.executable, '-B', str(ROOT / 'rename.py'), str(self.operation), '1',
             str(self.building if building is None else building),
             self.name if name is None else name,
-        ], text=True, capture_output=True, timeout=40)
+        ], text=True, encoding='utf-8', capture_output=True, timeout=40)
         # Evitar que errores impriman configuración de conexiones o secretos.
         self.assertEqual(proc.stderr, '')
         return proc.returncode, json.loads(proc.stdout)
@@ -138,6 +142,6 @@ if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(RenameIntegration)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if result.wasSuccessful():
-        (ROOT / 'test-results.json').write_text(json.dumps(EVIDENCE, ensure_ascii=False, indent=2) + '\n')
+        (ROOT / 'test-results.json').write_text(json.dumps(EVIDENCE, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         print('Evidencia sin credenciales: ops/test-results.json')
     sys.exit(0 if result.wasSuccessful() else 1)

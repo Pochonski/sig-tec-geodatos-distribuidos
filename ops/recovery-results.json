@@ -1,6 +1,6 @@
 {
-  "executed_at_utc": "2026-11-13T05:41:01.867640+00:00",
-  "base_commit": "e49c166ca989ce02d53bfa09d9b22d64e045b31b",
+  "executed_at_utc": "2026-11-15T18:46:38.472330+00:00",
+  "base_commit": "f9970e3356f1072f17a4cfa80b0d00dd83b7f64a",
   "source_note": "Cambios de ops/ sin commit; ejecutar el comando para regenerar evidencia.",
   "command": "ops/.venv/bin/python -B ops/test_recovery.py",
   "python": "3.13.5",
@@ -17,19 +17,19 @@
   },
   "success": true,
   "tests": 9,
-  "duration_seconds": 7.57,
+  "duration_seconds": 7.813,
   "protected_rows_before": {
-    "ops.requests": 17,
-    "ops.decisions": 17,
-    "ops.audit": 13,
-    "ops.applied_operations": 13,
-    "cartago.edificios": 18
+    "ops.requests": 25,
+    "ops.decisions": 25,
+    "ops.audit": 20,
+    "ops.applied_operations": 16,
+    "cartago.edificios": 21
   },
   "scenarios": [
     {
       "scenario": "test_after_both_prepare_before_decision",
-      "operation_id": "74baebc0-34b9-477d-b485-f56024f11faa",
-      "building_id": 62655085193676,
+      "operation_id": "d66dcbf8-2c36-486c-a433-c2e3ffde8b7a",
+      "building_id": 156,
       "decision": "ABORT",
       "resolved": [
         "cartago",
@@ -38,13 +38,13 @@
       "audit_rows": 0,
       "campus_markers": 0,
       "prepared_transactions": 0,
-      "name": "Fixture recuperación 74baebc0-34b9-477d-b485-f56024f11faa",
+      "name": "Fixture recuperación d66dcbf8-2c36-486c-a433-c2e3ffde8b7a",
       "retries_unchanged": true
     },
     {
       "scenario": "test_after_commit_decision",
-      "operation_id": "12644bde-bab7-42fa-abb7-2564158dec28",
-      "building_id": 396950832941091,
+      "operation_id": "b4befd9f-dcc0-4d40-a676-8e22cea6bc2d",
+      "building_id": 161,
       "decision": "COMMIT",
       "resolved": [
         "cartago",
@@ -53,13 +53,13 @@
       "audit_rows": 1,
       "campus_markers": 1,
       "prepared_transactions": 0,
-      "name": "Recuperado Cartago 'ñ' 12644bde-bab7-42fa-abb7-2564158dec28",
+      "name": "Recuperado Cartago 'ñ' b4befd9f-dcc0-4d40-a676-8e22cea6bc2d",
       "retries_unchanged": true
     },
     {
       "scenario": "test_after_first_prepare",
-      "operation_id": "093fd5f3-90c2-4d40-bd41-fefc56ca1e66",
-      "building_id": 8342160699026,
+      "operation_id": "04eda8ae-47a1-496c-acc3-06f4261418da",
+      "building_id": 166,
       "decision": "ABORT",
       "resolved": [
         "cartago"
@@ -67,13 +67,13 @@
       "audit_rows": 0,
       "campus_markers": 0,
       "prepared_transactions": 0,
-      "name": "Fixture recuperación 093fd5f3-90c2-4d40-bd41-fefc56ca1e66",
+      "name": "Fixture recuperación 04eda8ae-47a1-496c-acc3-06f4261418da",
       "retries_unchanged": true
     },
     {
       "scenario": "test_after_only_one_commit",
-      "operation_id": "2ead7a25-9301-4b28-8dd5-af97898b0933",
-      "building_id": 270733263622201,
+      "operation_id": "6936599c-6214-4abc-8ce5-adf18d3c1780",
+      "building_id": 171,
       "decision": "COMMIT",
       "resolved": [
         "central"
@@ -81,13 +81,13 @@
       "audit_rows": 1,
       "campus_markers": 1,
       "prepared_transactions": 0,
-      "name": "Recuperado Cartago 'ñ' 2ead7a25-9301-4b28-8dd5-af97898b0933",
+      "name": "Recuperado Cartago 'ñ' 6936599c-6214-4abc-8ce5-adf18d3c1780",
       "retries_unchanged": true
     },
     {
       "scenario": "test_central_inaccessible_with_commit",
-      "operation_id": "6971683d-e4cb-4e68-8047-29afde78fe3d",
-      "building_id": 469381710605596,
+      "operation_id": "64eeb4e1-95b9-4408-b85d-0572df28e8ca",
+      "building_id": 176,
       "decision": "COMMIT",
       "resolved": [
         "cartago",
@@ -96,13 +96,13 @@
       "audit_rows": 1,
       "campus_markers": 1,
       "prepared_transactions": 0,
-      "name": "Recuperado Cartago 'ñ' 6971683d-e4cb-4e68-8047-29afde78fe3d",
+      "name": "Recuperado Cartago 'ñ' 64eeb4e1-95b9-4408-b85d-0572df28e8ca",
       "retries_unchanged": true
     },
     {
       "scenario": "test_central_inaccessible_without_decision",
-      "operation_id": "070917e1-507b-48f3-a184-11da0f025545",
-      "building_id": 60143288316741,
+      "operation_id": "0e44986f-0dcf-439d-86d9-b5f0f67425a8",
+      "building_id": 181,
       "decision": "ABORT",
       "resolved": [
         "cartago",
@@ -111,25 +111,25 @@
       "audit_rows": 0,
       "campus_markers": 0,
       "prepared_transactions": 0,
-      "name": "Fixture recuperación 070917e1-507b-48f3-a184-11da0f025545",
+      "name": "Fixture recuperación 0e44986f-0dcf-439d-86d9-b5f0f67425a8",
       "retries_unchanged": true
     },
     {
       "scenario": "test_concurrent_recovery",
-      "operation_id": "d1d2eadb-b7b5-4e0c-922a-eb5dbfb2a453",
-      "building_id": 321396201229886,
+      "operation_id": "cc9edfcb-cd1d-44bd-ba16-b9b592fdd257",
+      "building_id": 186,
       "decision": "COMMIT",
       "resolved": [],
       "audit_rows": 1,
       "campus_markers": 1,
       "prepared_transactions": 0,
-      "name": "Recuperado Cartago 'ñ' d1d2eadb-b7b5-4e0c-922a-eb5dbfb2a453",
+      "name": "Recuperado Cartago 'ñ' cc9edfcb-cd1d-44bd-ba16-b9b592fdd257",
       "retries_unchanged": true
     },
     {
       "scenario": "test_missing_branch_requires_reconciliation",
-      "operation_id": "552a74ac-fc96-4e5d-8439-59b3d731a780",
-      "building_id": 57136334992366,
+      "operation_id": "da644629-5425-444d-bf12-51d6b4ab1a86",
+      "building_id": 191,
       "decision": "COMMIT",
       "resolved": [
         "cartago",
@@ -138,13 +138,13 @@
       "audit_rows": 1,
       "campus_markers": 1,
       "prepared_transactions": 0,
-      "name": "Recuperado Cartago 'ñ' 552a74ac-fc96-4e5d-8439-59b3d731a780",
+      "name": "Recuperado Cartago 'ñ' da644629-5425-444d-bf12-51d6b4ab1a86",
       "retries_unchanged": true
     },
     {
       "scenario": "test_uncertain_abort_acknowledgement",
-      "operation_id": "20a67a02-4bc7-4e19-b77f-2654169e8e97",
-      "building_id": 165538726169931,
+      "operation_id": "0ba20233-b9cc-423c-adfa-cacdae14a57e",
+      "building_id": 196,
       "decision": "ABORT",
       "resolved": [
         "cartago",
@@ -153,7 +153,7 @@
       "audit_rows": 0,
       "campus_markers": 0,
       "prepared_transactions": 0,
-      "name": "Fixture recuperación 20a67a02-4bc7-4e19-b77f-2654169e8e97",
+      "name": "Fixture recuperación 0ba20233-b9cc-423c-adfa-cacdae14a57e",
       "retries_unchanged": true
     }
   ],

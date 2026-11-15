@@ -17,12 +17,13 @@ from psycopg import sql
 from psycopg.rows import dict_row
 
 import rename
+import runtime
 from migrate import containers
 from verify import inventory
 
 ROOT = Path(__file__).resolve().parent
 BACKUPS = ROOT / 'backups'
-NODES = {'central': rename.CENTRAL, 'cartago': rename.CAMPUSES[1]}
+NODES = {'central': rename.CENTRAL, **{node.name:node for node in rename.CAMPUSES.values()}}
 
 
 class BackupError(Exception):
@@ -41,7 +42,7 @@ def command(args, *, data=None, output=None, source=None):
 
 
 def save(path, value):
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     path.chmod(0o600)
 
 
@@ -51,10 +52,10 @@ def checksum(path):
 
 
 def admin(node, values):
-    password = values.get(f'OPS_{node.upper()}_PASSWORD')
+    password = runtime.password(node,'admin',values)
     if not password:
         raise BackupError(f'Falta la contraseña administrativa local de {node}.')
-    return psycopg.connect(host='127.0.0.1', port=NODES[node].port, dbname='sig_tec',
+    return psycopg.connect(host=NODES[node].host, port=NODES[node].port, dbname='sig_tec',
                            user='postgres', password=password, row_factory=dict_row,
                            connect_timeout=5, options='-c search_path=pg_catalog')
 
@@ -129,7 +130,7 @@ def verify_physical(folder, image):
              '--entrypoint', '/usr/lib/postgresql/17/bin/pg_verifybackup', image, '/backup'])
 
 
-def create(node_names, kind):
+def create(node_names, kind, *, publish_summary=True):
     values = rename.configuration()
     source = sources(node_names)
     before, before_containers = origin_state(node_names, values), inventory()
@@ -144,7 +145,7 @@ def create(node_names, kind):
         folder.mkdir(mode=0o700)
         info = source[node]
         item = {'image': info['image'], 'database': 'sig_tec'}
-        password = values[f'OPS_{node.upper()}_PASSWORD']
+        password = runtime.password(node,'admin',values)
         with admin(node, values) as conn:
             if conn.execute("SELECT current_setting('server_version_num')::int AS version").fetchone()['version'] // 10000 != 17:
                 raise BackupError('Este procedimiento requiere PostgreSQL 17.')
@@ -193,15 +194,17 @@ def create(node_names, kind):
     report.update(status='complete', source_data_unchanged=True, source_prepared_unchanged=True,
                   existing_containers_unchanged=True)
     save(directory / 'manifest.json', report)
-    save(ROOT / 'backup-results.json', {'directory': str(directory.relative_to(ROOT.parent)), **report})
+    if publish_summary:
+        save(ROOT / 'backup-results.json', {'directory': str(directory.relative_to(ROOT.parent)), **report})
     print(f'Respaldos completos: {directory.relative_to(ROOT.parent)}', flush=True)
+    return directory
 
 
 def load(directory):
     directory = directory.resolve()
     if not directory.is_relative_to(BACKUPS.resolve()):
         raise BackupError('La ejecución debe estar dentro de ops/backups/.')
-    report = json.loads((directory / 'manifest.json').read_text())
+    report = json.loads((directory / 'manifest.json').read_text(encoding='utf-8'))
     if report['status'] != 'complete':
         raise BackupError('La ejecución no tiene un manifiesto completo.')
     return directory, report
@@ -256,7 +259,7 @@ def isolated_restore(folder, image):
                              '-d', 'sig_tec', '-v', 'ON_ERROR_STOP=1', '-c', query])
             return json.loads(value)
 
-        expected = json.loads((folder / 'expected.json').read_text())
+        expected = json.loads((folder / 'expected.json').read_text(encoding='utf-8'))
         restored = fingerprint(execute)
         if restored != expected:
             raise BackupError('La restauración no coincide con tablas, columnas, restricciones o registros de origen.')
@@ -294,7 +297,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='action', required=True)
     new = sub.add_parser('create')
-    new.add_argument('--node', choices=('all', 'central', 'cartago'), default='all')
+    new.add_argument('--node', choices=('all', *NODES), default='all')
     new.add_argument('--kind', choices=('all', 'logical', 'physical'), default='all')
     for action in ('verify', 'restore-test'):
         sub.add_parser(action).add_argument('directory', type=Path)

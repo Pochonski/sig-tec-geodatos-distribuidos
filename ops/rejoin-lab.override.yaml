@@ -1,0 +1,18 @@
+# Solo para una copia nueva bajo -p sig-tec-rejoin-lab. No usar con sig-tec-ops.
+# Requiere Compose >= 2.24.4 para !override.
+networks:
+  default:
+    internal: true
+services:
+  central:
+    ports: !override ["127.0.0.1:58430:5432"]
+  cartago:
+    ports: !override ["127.0.0.1:58431:5432"]
+  san_jose:
+    ports: !override ["127.0.0.1:58432:5432"]
+  san_carlos:
+    ports: !override ["127.0.0.1:58433:5432"]
+  alajuela:
+    ports: !override ["127.0.0.1:58434:5432"]
+  limon:
+    ports: !override ["127.0.0.1:58435:5432"]
