@@ -197,10 +197,22 @@ La alternativa de copia inicial selectiva documentada en REINCORPORACION.md
 sigue siendo necesaria si no puede demostrarse continuidad/igualdad con un corte.
 Este ensayo no certifica esa alternativa ni autoriza vaciar 33 tablas a ciegas.
 
-## Windows: preparado, ejecución real pendiente
+## Windows: validación real
 
-No hubo acceso a Windows real en esta sesión. Ningún resultado Linux se etiqueta
-como Windows. `windows-results.json` registra `pending`.
+La validación se ejecutó el 2026-11-16 en Windows 11, Python 3.13.5, PowerShell
+7.6.9 y Docker Desktop con contenedores Linux, usando exclusivamente el proyecto
+`sig-tec-rejoin-lab`. Se aprobaron 6/6 pruebas UTF-8, las migraciones de los seis
+nodos, la integración de los cinco campus y 9/9 escenarios de recuperación 2PC.
+Esto incluye `test_central_inaccessible_without_decision` y
+`test_central_inaccessible_with_commit`: ambos usan un puerto local sin listener,
+no detienen Central y terminan sin `UnicodeDecodeError`. Al finalizar no quedaron
+transacciones preparadas.
+
+La salida JSON de `rename.py` y `recover.py` usa `ensure_ascii=True` para stdout.
+Los datos permanecen Unicode en PostgreSQL; solo su representación de la CLI se
+escapa para poder imprimirse también en cp1252. `test_cli_json.py` comprueba éxito,
+pendiente y error con tildes, ñ, CJK y emoji, y recupera el texto original al
+decodificar el JSON.
 
 Requisitos: Windows, Python >=3.12, Git, Docker Desktop con contenedores Linux
 y la imagen PostgreSQL/PostGIS fijada disponible. En PowerShell desde la raíz:
@@ -209,6 +221,7 @@ y la imagen PostgreSQL/PostGIS fijada disponible. En PowerShell desde la raíz:
 py -3 -m venv ops/.venv-win
 ops/.venv-win/Scripts/python.exe -m pip install --no-cache-dir -r ops/requirements.txt
 & ./ops/test_windows.ps1
+ops/.venv-win/Scripts/python.exe -B ops/test_cli_json.py
 ```
 
 El runner exige Windows real, fuerza `PYTHONUTF8=0` y salida cp1252 para que
@@ -224,10 +237,20 @@ ops/.venv-win/Scripts/python.exe -B ops/migrate.py
 & ./ops/test_windows.ps1 -Integration -Config ops/rejoin-lab/runtime.json
 ```
 
-Integration solo acepta `sig-tec-rejoin-lab`. Las credenciales locales deben
-tener ACL restringida al operador. PITR/reincorporación y permisos del PGDATA
-copiado en Docker Desktop necesitan validación real adicional en Windows; el
-runner no afirma haberlos probado ni los ejecuta implícitamente.
+Integration solo acepta `sig-tec-rejoin-lab` y ahora ejecuta, en este orden,
+UTF-8, migraciones, integración y los nueve casos de recuperación. Si cualquiera
+falla, `windows-results.json` queda con estado `failed`; no se presenta la
+validación como completa. Las credenciales locales deben tener ACL restringida al
+operador. PITR y reincorporación no se ejecutaron en Windows.
+
+### Preflight WAL después del merge
+
+`wal.preflight()` admite únicamente `armando/operaciones` durante el desarrollo
+y `main` tras el merge. Otra rama o `HEAD` separado se rechazan. El nombre de rama
+no autoriza operaciones por sí mismo: se conservan las comprobaciones de proyecto,
+contenedores, montajes/volúmenes PGDATA, imagen PostgreSQL 17, espacio,
+transacciones preparadas, sesiones activas y consistencia 2PC. `wal.apply()`
+sigue rechazando configuraciones integradas y nunca recrea esa instalación.
 
 ## Evidencia y alcance
 

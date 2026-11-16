@@ -222,13 +222,13 @@ def main():
         result = rename(args.operation_id, args.campus_id, args.building_id, args.new_name)
     except Pending as error:
         print(json.dumps({'operation_id': str(args.operation_id), 'status': 'pending',
-                          'message': str(error)}, ensure_ascii=False))
+                          'message': str(error)}, ensure_ascii=True))
         return 2
     except OperationError as error:
         print(json.dumps({'operation_id': str(args.operation_id), 'status': 'error',
-                          'message': str(error)}, ensure_ascii=False))
+                          'message': str(error)}, ensure_ascii=True))
         return 1
-    print(json.dumps(result))
+    print(json.dumps(result, ensure_ascii=True))
     return 0
 
 

@@ -5,8 +5,29 @@
   "project": "sig-tec-rejoin-lab",
   "base_commit": "f9970e3356f1072f17a4cfa80b0d00dd83b7f64a",
   "joseph_reference": "f3e1f91e1e61e2f293fac4ba50de209cc0af65ea",
-  "status": "passed_available_linux_checks_windows_pending",
+  "status": "passed_linux_and_windows_validation",
   "environment_prefix": "SIGTEC_OPS_CONFIG=ops/rejoin-lab/runtime.json",
+  "windows": {
+    "executed_at_utc": "2026-11-16T03:04:36.9087894Z",
+    "os": "Windows 11",
+    "os_version": "Microsoft Windows NT 10.0.26200.0",
+    "python": "3.13.5",
+    "docker": "Docker Desktop with Linux containers",
+    "project": "sig-tec-rejoin-lab",
+    "utf8": {"executed": true, "passed": 6, "evidence": "windows-results.json"},
+    "migrations": {"executed": true, "passed": true, "nodes": 6},
+    "six_node_integration": {"executed": true, "passed": true, "evidence": "integrated-results.json"},
+    "recovery_2pc": {
+      "executed": 9,
+      "passed": 9,
+      "central_inaccessible_without_decision": "passed",
+      "central_inaccessible_with_commit": "passed",
+      "prepared_transactions_after": 0,
+      "evidence": "recovery-results.json"
+    },
+    "cli_json_cp1252": {"executed": true, "passed": 3, "evidence": "test_cli_json.py"},
+    "wal_main_compatibility": {"executed": true, "passed": 4, "evidence": "test_wal_inventory.py"}
+  },
   "unit_tests": {
     "utf8": 6,
     "archive_wal": 5,
@@ -120,7 +141,6 @@
     }
   ],
   "pending": [
-    "Windows real: test_windows.ps1 prepared but not executed",
     "Joseph installation credentials/endpoints and WAL configuration approval",
     "Production reconciliation authority and cutover window",
     "Retention budget and eventual retirement of old disabled subscriptions/slots"

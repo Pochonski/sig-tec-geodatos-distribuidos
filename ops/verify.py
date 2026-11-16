@@ -27,7 +27,9 @@ def inventory():
     ids = subprocess.check_output(['docker', 'ps', '-aq'], text=True, encoding='utf-8').split()
     details = json.loads(subprocess.check_output(['docker', 'inspect', *ids], text=True, encoding='utf-8'))
     return {item['Id']: (item['State']['StartedAt'], item['State']['Status'],
-                         item['Mounts']) for item in details}
+                         tuple(sorted(item['Mounts'], key=lambda mount: (
+                             mount['Destination'], mount['Type'], mount.get('Name', mount['Source'])))))
+            for item in details}
 
 
 def contents(nodes):

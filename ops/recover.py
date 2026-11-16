@@ -130,7 +130,8 @@ def main():
         code = 1
     else:
         code = 0
-    print(json.dumps(result, ensure_ascii=False))
+    # stdout es un protocolo JSON: mantenerlo imprimible aun con consolas cp1252.
+    print(json.dumps(result, ensure_ascii=True))
     return code
 
 

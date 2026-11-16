@@ -1,12 +1,12 @@
 {
-  "executed_at_utc": "2026-11-16T07:14:12.310968+00:00",
+  "executed_at_utc": "2026-11-16T03:04:08.784060+00:00",
   "project": "sig-tec-rejoin-lab",
   "status": "passed",
   "campus_checks": [
     {
       "campus": "cartago",
-      "building_id": 46,
-      "operation_id": "a4d459b8-781e-45e1-8f91-0781c648079e",
+      "building_id": 396,
+      "operation_id": "1484ae6d-ce0e-414f-a09b-557979ed207b",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -19,8 +19,8 @@
     },
     {
       "campus": "san_jose",
-      "building_id": 47,
-      "operation_id": "f735be2a-e3dd-45fe-937a-f53fd5d50854",
+      "building_id": 217,
+      "operation_id": "6853f9ad-f75a-43fb-8d37-abf7d142aa42",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -33,8 +33,8 @@
     },
     {
       "campus": "san_carlos",
-      "building_id": 48,
-      "operation_id": "e453a59b-fd8f-46e8-8701-2dd3bd8542e2",
+      "building_id": 218,
+      "operation_id": "001c1938-e719-4262-afb8-b822c60aa5d2",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -47,8 +47,8 @@
     },
     {
       "campus": "alajuela",
-      "building_id": 49,
-      "operation_id": "578960da-1ba8-40e7-8926-0a8c39379471",
+      "building_id": 219,
+      "operation_id": "113cab8a-75ab-41c4-8ba3-84aee5c73ee6",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -61,8 +61,8 @@
     },
     {
       "campus": "limon",
-      "building_id": 50,
-      "operation_id": "f042c88a-a082-47ac-b07d-4ebcfd6bdec8",
+      "building_id": 220,
+      "operation_id": "bc368cd0-1af9-4415-b213-f6189e5301a4",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,

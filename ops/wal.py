@@ -88,14 +88,21 @@ def other_inventory(nodes):
     return {key: value for key, value in inventory().items() if key not in target_ids}
 
 
+def authorized_branch(branch):
+    """Las ramas de entrega autorizadas; detached HEAD y otras se rechazan."""
+    return branch in ('armando/operaciones', 'main')
+
+
 def preflight():
-    if run(['git', 'branch', '--show-current']) != 'armando/operaciones':
-        raise SafetyError('Rama incorrecta; detenerse.')
+    branch = run(['git', 'branch', '--show-current'])
+    if not authorized_branch(branch):
+        raise SafetyError('Rama no autorizada o HEAD separado; detenerse.')
     free = shutil.disk_usage(ROOT)
     if free.free < max(5 * 2**30, free.total // 10):
         raise SafetyError('Espacio insuficiente en ops/: mínimo 5 GiB y 10% libre.')
     nodes, values = containers(), configuration()
-    result = {'host_free_bytes': free.free, 'git_status': run(['git', 'status', '--short']), 'nodes': {}}
+    result = {'host_free_bytes': free.free, 'git_branch': branch,
+              'git_status': run(['git', 'status', '--short']), 'nodes': {}}
     for node, container in nodes.items():
         info = json.loads(run(['docker', 'inspect', container]))[0]
         expected_data = runtime.config().get('data_mounts',{}).get(node,f'{PROJECT}_{node}_data')
