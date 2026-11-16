@@ -71,6 +71,10 @@ python -B ops/pitr.py run
 ```
 
 Sustituir `<ID>` por el directorio que imprimió `backup.py create`.
+En un perfil integrado, `backup.py` conserva el resumen versionado del
+laboratorio `ops/backup-results.json`: la ejecución nueva queda en el
+`manifest.json` privado de `ops/backups/<ID>/`. El informe WAL del proyecto
+original también queda fuera de Git.
 `integration_checks.py` acepta escrituras solo en los proyectos de laboratorio
 `sig-tec-integracion` y `sig-tec-rejoin-lab`. `wal.py` admite la rama
 `joseph/integracion-final` solo con el proyecto descartable

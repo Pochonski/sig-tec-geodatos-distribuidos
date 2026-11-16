@@ -194,7 +194,9 @@ def create(node_names, kind, *, publish_summary=True):
     report.update(status='complete', source_data_unchanged=True, source_prepared_unchanged=True,
                   existing_containers_unchanged=True)
     save(directory / 'manifest.json', report)
-    if publish_summary:
+    # El resumen versionado corresponde al laboratorio autónomo. En una base
+    # integrada, el manifiesto privado de esta ejecución conserva la evidencia.
+    if publish_summary and not runtime.config().get('integrated'):
         save(ROOT / 'backup-results.json', {'directory': str(directory.relative_to(ROOT.parent)), **report})
     print(f'Respaldos completos: {directory.relative_to(ROOT.parent)}', flush=True)
     return directory
@@ -288,7 +290,8 @@ def restore_test(directory):
     report['logical_restore_test'] = {'executed_at_utc': datetime.now(timezone.utc).isoformat(),
                                       'nodes': results, 'source_data_prepared_containers_unchanged': True}
     save(directory / 'manifest.json', report)
-    save(ROOT / 'backup-results.json', {'directory': str(directory.relative_to(ROOT.parent)), **report})
+    if not runtime.config().get('integrated'):
+        save(ROOT / 'backup-results.json', {'directory': str(directory.relative_to(ROOT.parent)), **report})
     print('Restauraciones verificadas; instancias temporales eliminadas y orígenes intactos.', flush=True)
 
 

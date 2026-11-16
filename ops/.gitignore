@@ -10,4 +10,4 @@ pitr-unit-data/
 rejoin-lab/
 .runtime-state/
 runtime.integrated.json
-wal-sig-tec-integracion-results.json
+wal-*-results.json
