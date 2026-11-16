@@ -60,6 +60,26 @@ El video debe durar como máximo **10 minutos**, incluyendo títulos y cierre. U
 | 5:30–7:40 | Renombrado 2PC, auditoría central y recuperación del coordinador después de una caída. |
 | 7:40–9:40 | Respaldos por nodo, PITR aislado, edificio recuperado y evidencia de reincorporación. |
 
+## Ejecución en la instalación original (16 de noviembre de 2026)
+
+Con el código integrado de `main` en `dc956c9` y el proyecto Compose
+`iiiproyectobasesii`, se conservó la instalación de seis volúmenes de datos y
+se añadieron seis volúmenes WAL. Los seis servicios quedaron saludables.
+
+| Comprobación | Resultado |
+| --- | --- |
+| Bootstrap y migración | Diez suscripciones existentes y sus slots reutilizados; ocho vistas con cinco objetos por nodo; ocho estilos predeterminados; cero transacciones preparadas. |
+| Archivado y respaldos | Los seis nodos archivaron un segmento legible de 16 MiB sin nuevos fallos. Se crearon y verificaron seis `pg_dump` y seis `pg_basebackup`; seis restauraciones lógicas aisladas coincidieron en tablas, conteos y hashes. |
+| Proveedor QGIS 3.44.15 | `db/qgis_smoke.py` pasó con 40 vistas, 40 IDs únicos, EPSG:8908, geometrías válidas, CRUD y rechazo de edición ajena en las ocho capas. |
+| Complemento | `qgis/pruebas/test_qgis.py` aprobó siete casos y omitió uno: no se aprovisionó una cuenta sin campus. En Desktop, el perfil `sig_tec_main` cargó el complemento y mostró el diálogo con `127.0.0.1:55430` y `sig_tec`. El ingreso manual en ese diálogo queda por comprobar. |
+| Estado posterior | `ops/wal.py check-preserved` confirmó filas protegidas y montajes de los volúmenes originales, sin 2PC pendiente. |
+
+Los respaldos, informes, credenciales y el perfil QGIS local no se publican en
+Git. El procedimiento y la ubicación privada del manifiesto de respaldo están
+en [INTEGRACION.md](../db/INTEGRACION.md). La prueba de PITR ya se había
+completado en el proyecto de laboratorio `sig-tec-integracion`; en la
+instalación original se verificaron respaldos y restauración lógica aislada.
+
 ## Consultas pendientes al profesor
 
 - **Fecha de entrega.** La portada (p. 1) indica el lunes **30 de noviembre de 2026 a las 8:00 a. m.** La sección administrativa (p. 6) indica **30 de junio de 2026 a las 8:00 a. m.** Confirmar la fecha oficial en Moodle. Para organizar el trabajo se toma provisionalmente la fecha de la portada.
