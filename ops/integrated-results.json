@@ -1,0 +1,80 @@
+{
+  "executed_at_utc": "2026-11-16T03:04:08.784060+00:00",
+  "project": "sig-tec-rejoin-lab",
+  "status": "passed",
+  "campus_checks": [
+    {
+      "campus": "cartago",
+      "building_id": 396,
+      "operation_id": "1484ae6d-ce0e-414f-a09b-557979ed207b",
+      "utf8_roundtrip": true,
+      "replication_six_nodes": true,
+      "geom_preserved": true,
+      "retry_idempotent": true,
+      "permissions_rejected": [
+        "id",
+        "campus_id",
+        "geom"
+      ]
+    },
+    {
+      "campus": "san_jose",
+      "building_id": 217,
+      "operation_id": "6853f9ad-f75a-43fb-8d37-abf7d142aa42",
+      "utf8_roundtrip": true,
+      "replication_six_nodes": true,
+      "geom_preserved": true,
+      "retry_idempotent": true,
+      "permissions_rejected": [
+        "id",
+        "campus_id",
+        "geom"
+      ]
+    },
+    {
+      "campus": "san_carlos",
+      "building_id": 218,
+      "operation_id": "001c1938-e719-4262-afb8-b822c60aa5d2",
+      "utf8_roundtrip": true,
+      "replication_six_nodes": true,
+      "geom_preserved": true,
+      "retry_idempotent": true,
+      "permissions_rejected": [
+        "id",
+        "campus_id",
+        "geom"
+      ]
+    },
+    {
+      "campus": "alajuela",
+      "building_id": 219,
+      "operation_id": "113cab8a-75ab-41c4-8ba3-84aee5c73ee6",
+      "utf8_roundtrip": true,
+      "replication_six_nodes": true,
+      "geom_preserved": true,
+      "retry_idempotent": true,
+      "permissions_rejected": [
+        "id",
+        "campus_id",
+        "geom"
+      ]
+    },
+    {
+      "campus": "limon",
+      "building_id": 220,
+      "operation_id": "bc368cd0-1af9-4415-b213-f6189e5301a4",
+      "utf8_roundtrip": true,
+      "replication_six_nodes": true,
+      "geom_preserved": true,
+      "retry_idempotent": true,
+      "permissions_rejected": [
+        "id",
+        "campus_id",
+        "geom"
+      ]
+    }
+  ],
+  "all_40_geographic_tables_converged": true,
+  "prepared_transactions": 0,
+  "windows_execution": "passed"
+}

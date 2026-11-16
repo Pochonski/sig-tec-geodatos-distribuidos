@@ -1,0 +1,550 @@
+{
+  "verifications": [
+    {
+      "executed_at_utc": "2026-11-15T18:28:42.634602+00:00",
+      "nodes": {
+        "central": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_central_wal",
+          "segment": "000000010000000000000005",
+          "size_bytes": 16777216,
+          "sha256": "5044407727d7efa311d7bfcaa727051e9e339b6706e931696ce4a4684932c66e",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 4,
+            "last_archived_wal": "000000010000000000000004",
+            "last_archived_time": "2026-11-15T18:27:06.581118+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:33.271351+00:00"
+          },
+          "after": {
+            "archived_count": 5,
+            "last_archived_wal": "000000010000000000000005",
+            "last_archived_time": "2026-11-15T18:28:36.331405+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:33.271351+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "cartago": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_cartago_wal",
+          "segment": "000000010000000000000005",
+          "size_bytes": 16777216,
+          "sha256": "d1c168945325ca54959ed3156a2fcb845cf3fed455966b4045108727c5f8b55e",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 4,
+            "last_archived_wal": "000000010000000000000004",
+            "last_archived_time": "2026-11-15T18:27:06.519384+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.329016+00:00"
+          },
+          "after": {
+            "archived_count": 5,
+            "last_archived_wal": "000000010000000000000005",
+            "last_archived_time": "2026-11-15T18:28:37.082639+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.329016+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "san_jose": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_san_jose_wal",
+          "segment": "000000010000000000000005",
+          "size_bytes": 16777216,
+          "sha256": "db85d6232624ebffc431e74f11353db693fe373a14e192f96c09998da95f0ad5",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 4,
+            "last_archived_wal": "000000010000000000000004",
+            "last_archived_time": "2026-11-15T18:27:06.471085+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.510949+00:00"
+          },
+          "after": {
+            "archived_count": 5,
+            "last_archived_wal": "000000010000000000000005",
+            "last_archived_time": "2026-11-15T18:28:38.306915+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.510949+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "san_carlos": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_san_carlos_wal",
+          "segment": "000000010000000000000005",
+          "size_bytes": 16777216,
+          "sha256": "81e46b65bd8f83f0ac6992e7263a5d8799cfa737b78421a9793f1a7cc6c0c527",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 4,
+            "last_archived_wal": "000000010000000000000004",
+            "last_archived_time": "2026-11-15T18:27:07.656815+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.791648+00:00"
+          },
+          "after": {
+            "archived_count": 5,
+            "last_archived_wal": "000000010000000000000005",
+            "last_archived_time": "2026-11-15T18:28:38.859404+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.791648+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "alajuela": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_alajuela_wal",
+          "segment": "000000010000000000000005",
+          "size_bytes": 16777216,
+          "sha256": "8a4309763eddfa173e0552028a84ad4f8e035cf8fb808cbce8cfb46b3541dfb2",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 4,
+            "last_archived_wal": "000000010000000000000004",
+            "last_archived_time": "2026-11-15T18:27:06.519747+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:34.550336+00:00"
+          },
+          "after": {
+            "archived_count": 5,
+            "last_archived_wal": "000000010000000000000005",
+            "last_archived_time": "2026-11-15T18:28:39.705468+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:34.550336+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "limon": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_limon_wal",
+          "segment": "000000010000000000000005",
+          "size_bytes": 16777216,
+          "sha256": "be0ac78dee5656c8f7e89e33de03443259f058a923872b95f0e75d5214d2d961",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 4,
+            "last_archived_wal": "000000010000000000000004",
+            "last_archived_time": "2026-11-15T18:27:07.684733+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.328720+00:00"
+          },
+          "after": {
+            "archived_count": 5,
+            "last_archived_wal": "000000010000000000000005",
+            "last_archived_time": "2026-11-15T18:28:40.581136+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.328720+00:00"
+          },
+          "failed_count_delta": 0
+        }
+      }
+    },
+    {
+      "executed_at_utc": "2026-11-15T18:42:47.347858+00:00",
+      "nodes": {
+        "central": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_central_wal",
+          "segment": "000000010000000000000009",
+          "size_bytes": 16777216,
+          "sha256": "423d8d275a16b2f937022b9dd7c2ed3f8257a7cdfc69010b86f74a90089515f8",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 9,
+            "last_archived_wal": "000000010000000000000008",
+            "last_archived_time": "2026-11-15T18:31:02.851664+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:33.271351+00:00"
+          },
+          "after": {
+            "archived_count": 10,
+            "last_archived_wal": "000000010000000000000009",
+            "last_archived_time": "2026-11-15T18:42:41.029568+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:33.271351+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "cartago": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_cartago_recovered_wal",
+          "segment": "00000002000000000000000E",
+          "size_bytes": 16777216,
+          "sha256": "cf01da38458edab9b93f82174eb47161f12d9a823735f7fa12d7718a4c9651e1",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 0,
+            "last_archived_wal": null,
+            "last_archived_time": null,
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:39:56.555965+00:00"
+          },
+          "after": {
+            "archived_count": 1,
+            "last_archived_wal": "00000002000000000000000E",
+            "last_archived_time": "2026-11-15T18:42:41.835800+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:39:56.555965+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "san_jose": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_san_jose_wal",
+          "segment": "000000010000000000000009",
+          "size_bytes": 16777216,
+          "sha256": "52eeee987473629f9f3461eb374e74aa3208b2eb7241ec86f01e9534ce4c01fe",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 9,
+            "last_archived_wal": "000000010000000000000008",
+            "last_archived_time": "2026-11-15T18:31:02.851780+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.510949+00:00"
+          },
+          "after": {
+            "archived_count": 10,
+            "last_archived_wal": "000000010000000000000009",
+            "last_archived_time": "2026-11-15T18:42:42.682751+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.510949+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "san_carlos": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_san_carlos_wal",
+          "segment": "000000010000000000000009",
+          "size_bytes": 16777216,
+          "sha256": "652cc712357b5b8f41eba82c5052d4b74cccb9a716304572b9b35c5d1862049c",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 9,
+            "last_archived_wal": "000000010000000000000008",
+            "last_archived_time": "2026-11-15T18:31:02.851826+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.791648+00:00"
+          },
+          "after": {
+            "archived_count": 10,
+            "last_archived_wal": "000000010000000000000009",
+            "last_archived_time": "2026-11-15T18:42:43.554788+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.791648+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "alajuela": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_alajuela_wal",
+          "segment": "000000010000000000000009",
+          "size_bytes": 16777216,
+          "sha256": "878c40b759a5242f01dac67f69f237e99cf42f562a1f4e045deeb11ffe65e0ce",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 9,
+            "last_archived_wal": "000000010000000000000008",
+            "last_archived_time": "2026-11-15T18:31:02.851707+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:34.550336+00:00"
+          },
+          "after": {
+            "archived_count": 10,
+            "last_archived_wal": "000000010000000000000009",
+            "last_archived_time": "2026-11-15T18:42:44.450385+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:34.550336+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "limon": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "logical"
+          },
+          "volume": "sig-tec-rejoin-lab_limon_wal",
+          "segment": "000000010000000000000009",
+          "size_bytes": 16777216,
+          "sha256": "d79f9647053936655066b92106d6f658fcd03c4d5901fc4564c22466fbe47d00",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 9,
+            "last_archived_wal": "000000010000000000000008",
+            "last_archived_time": "2026-11-15T18:31:02.851838+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.328720+00:00"
+          },
+          "after": {
+            "archived_count": 10,
+            "last_archived_wal": "000000010000000000000009",
+            "last_archived_time": "2026-11-15T18:42:45.338517+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-15T18:23:32.328720+00:00"
+          },
+          "failed_count_delta": 0
+        }
+      }
+    }
+  ],
+  "base_commit": "f9970e3356f1072f17a4cfa80b0d00dd83b7f64a",
+  "preflight": {
+    "host_free_bytes": 163756191744,
+    "git_status": "M ops/.gitignore\n M ops/BACKUPS.md\n M ops/README.md\n M ops/backup-results.json\n M ops/backup.py\n M ops/compose.yaml\n M ops/migrate.py\n M ops/recovery-results.json\n M ops/rename.py\n M ops/test_recovery.py\n M ops/test_rename.py\n M ops/verify.py\n?? ops/.gitattributes\n?? ops/PITR.md\n?? ops/REINCORPORACION.md\n?? ops/WAL.md\n?? ops/archive-wal.sh\n?? ops/check_rejoin_lab.py\n?? ops/integrated-results.json\n?? ops/integration-reference.json\n?? ops/integration_checks.py\n?? ops/lab.py\n?? ops/migrations/004_participant.sql\n?? ops/pitr-results.json\n?? ops/pitr.py\n?? ops/rejoin-execution-results.json\n?? ops/rejoin-integration-dependencies.json\n?? ops/rejoin-lab-check.json\n?? ops/rejoin-lab.override.yaml\n?? ops/rejoin-nodes.example.json\n?? ops/rejoin-results.json\n?? ops/rejoin.py\n?? ops/rejoin_lab.py\n?? ops/runtime.py\n?? ops/start-postgres.sh\n?? ops/test_archive_wal.py\n?? ops/test_pitr.py\n?? ops/test_rejoin.py\n?? ops/test_utf8.py\n?? ops/test_wal_inventory.py\n?? ops/test_windows.ps1\n?? ops/wal-results.json\n?? ops/wal-sig-tec-rejoin-lab-results.json\n?? ops/wal.py\n?? ops/windows-results.json",
+    "nodes": {
+      "central": {
+        "data_volume": "sig-tec-rejoin-lab_central_data",
+        "settings": {
+          "archive_mode": "on",
+          "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+          "max_prepared_transactions": "10",
+          "wal_level": "logical"
+        },
+        "archiver": {
+          "archived_count": 9,
+          "last_archived_wal": "000000010000000000000008",
+          "last_archived_time": "2026-11-15T18:31:02.851664+00:00",
+          "failed_count": 0,
+          "last_failed_wal": null,
+          "last_failed_time": null,
+          "stats_reset": "2026-11-15T18:23:33.271351+00:00"
+        },
+        "free_bytes": 163756191744
+      },
+      "cartago": {
+        "data_volume": "/home/armando/Proyectos/sig-tec-geodatos-distribuidos/ops/pitr-runs/56fa338298a540699e75b6b98c7a1e25/pgdata",
+        "settings": {
+          "archive_mode": "on",
+          "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+          "max_prepared_transactions": "10",
+          "wal_level": "logical"
+        },
+        "archiver": {
+          "archived_count": 0,
+          "last_archived_wal": null,
+          "last_archived_time": null,
+          "failed_count": 0,
+          "last_failed_wal": null,
+          "last_failed_time": null,
+          "stats_reset": "2026-11-15T18:39:56.555965+00:00"
+        },
+        "free_bytes": 163756191744
+      },
+      "san_jose": {
+        "data_volume": "sig-tec-rejoin-lab_san_jose_data",
+        "settings": {
+          "archive_mode": "on",
+          "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+          "max_prepared_transactions": "10",
+          "wal_level": "logical"
+        },
+        "archiver": {
+          "archived_count": 9,
+          "last_archived_wal": "000000010000000000000008",
+          "last_archived_time": "2026-11-15T18:31:02.851780+00:00",
+          "failed_count": 0,
+          "last_failed_wal": null,
+          "last_failed_time": null,
+          "stats_reset": "2026-11-15T18:23:32.510949+00:00"
+        },
+        "free_bytes": 163756191744
+      },
+      "san_carlos": {
+        "data_volume": "sig-tec-rejoin-lab_san_carlos_data",
+        "settings": {
+          "archive_mode": "on",
+          "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+          "max_prepared_transactions": "10",
+          "wal_level": "logical"
+        },
+        "archiver": {
+          "archived_count": 9,
+          "last_archived_wal": "000000010000000000000008",
+          "last_archived_time": "2026-11-15T18:31:02.851826+00:00",
+          "failed_count": 0,
+          "last_failed_wal": null,
+          "last_failed_time": null,
+          "stats_reset": "2026-11-15T18:23:32.791648+00:00"
+        },
+        "free_bytes": 163756191744
+      },
+      "alajuela": {
+        "data_volume": "sig-tec-rejoin-lab_alajuela_data",
+        "settings": {
+          "archive_mode": "on",
+          "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+          "max_prepared_transactions": "10",
+          "wal_level": "logical"
+        },
+        "archiver": {
+          "archived_count": 9,
+          "last_archived_wal": "000000010000000000000008",
+          "last_archived_time": "2026-11-15T18:31:02.851707+00:00",
+          "failed_count": 0,
+          "last_failed_wal": null,
+          "last_failed_time": null,
+          "stats_reset": "2026-11-15T18:23:34.550336+00:00"
+        },
+        "free_bytes": 163756191744
+      },
+      "limon": {
+        "data_volume": "sig-tec-rejoin-lab_limon_data",
+        "settings": {
+          "archive_mode": "on",
+          "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+          "max_prepared_transactions": "10",
+          "wal_level": "logical"
+        },
+        "archiver": {
+          "archived_count": 9,
+          "last_archived_wal": "000000010000000000000008",
+          "last_archived_time": "2026-11-15T18:31:02.851838+00:00",
+          "failed_count": 0,
+          "last_failed_wal": null,
+          "last_failed_time": null,
+          "stats_reset": "2026-11-15T18:23:32.328720+00:00"
+        },
+        "free_bytes": 163756191744
+      }
+    }
+  },
+  "protected_rows": {
+    "ops.requests": 21,
+    "ops.decisions": 21,
+    "ops.audit": 16,
+    "ops.applied_operations": 12,
+    "cartago.edificios": 17,
+    "san_jose.ops.applied_operations": 1,
+    "san_jose.edificios": 4,
+    "san_carlos.ops.applied_operations": 1,
+    "san_carlos.edificios": 2,
+    "alajuela.ops.applied_operations": 1,
+    "alajuela.edificios": 2,
+    "limon.ops.applied_operations": 1,
+    "limon.edificios": 2
+  },
+  "previous_rows_unchanged": true,
+  "data_volumes_unchanged": true,
+  "other_containers_unchanged": true,
+  "prepared_transactions": 0
+}

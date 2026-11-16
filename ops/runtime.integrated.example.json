@@ -1,0 +1,43 @@
+{
+  "project": "sig-tec-geodatos-distribuidos",
+  "integrated": true,
+  "env_file": ".env.integrated",
+  "nodes": {
+    "central": {
+      "host": "127.0.0.1",
+      "port": 55430,
+      "admin_password_env": "SIGTEC_ADMIN_PASSWORD",
+      "cli_password_env": "OPS_CENTRAL_CLI_PASSWORD"
+    },
+    "cartago": {
+      "host": "127.0.0.1",
+      "port": 55431,
+      "admin_password_env": "SIGTEC_ADMIN_PASSWORD",
+      "cli_password_env": "OPS_CARTAGO_CLI_PASSWORD"
+    },
+    "san_jose": {
+      "host": "127.0.0.1",
+      "port": 55432,
+      "admin_password_env": "SIGTEC_ADMIN_PASSWORD",
+      "cli_password_env": "OPS_SAN_JOSE_CLI_PASSWORD"
+    },
+    "san_carlos": {
+      "host": "127.0.0.1",
+      "port": 55433,
+      "admin_password_env": "SIGTEC_ADMIN_PASSWORD",
+      "cli_password_env": "OPS_SAN_CARLOS_CLI_PASSWORD"
+    },
+    "alajuela": {
+      "host": "127.0.0.1",
+      "port": 55434,
+      "admin_password_env": "SIGTEC_ADMIN_PASSWORD",
+      "cli_password_env": "OPS_ALAJUELA_CLI_PASSWORD"
+    },
+    "limon": {
+      "host": "127.0.0.1",
+      "port": 55435,
+      "admin_password_env": "SIGTEC_ADMIN_PASSWORD",
+      "cli_password_env": "OPS_LIMON_CLI_PASSWORD"
+    }
+  }
+}

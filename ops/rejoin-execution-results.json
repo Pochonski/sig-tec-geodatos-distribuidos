@@ -1,0 +1,91 @@
+{
+  "started_at_utc": "2026-11-15T18:39:14.810329+00:00",
+  "project": "sig-tec-rejoin-lab",
+  "status": "passed",
+  "scope": "Solo laboratorio, sin reincorporación de producción",
+  "phase": "completed",
+  "pitr": {
+    "point": {
+      "name": "sig_tec_pitr_56fa338298a540699e75b6b98c7a1e25",
+      "lsn": "0/E000090",
+      "created_at_utc": "2026-11-15T18:39:36.713084+00:00",
+      "backup_end_lsn": "0/D000120"
+    },
+    "fixture_id": 121,
+    "timeline": 2
+  },
+  "two_phase": {
+    "post_pitr_commit": "c1522f53-96d0-4f88-8f3f-3cae11358785",
+    "recovered_abort": "369f52f8-86f3-4ef3-8274-7af2d92d4d9c",
+    "unknown_prepared_resolved": false
+  },
+  "old_owner": {
+    "container": "sig-tec-rejoin-lab-cartago-1",
+    "stopped": true,
+    "volume_preserved": true
+  },
+  "reconciliation": {
+    "all_40_tables_and_styles_match_cut": true,
+    "marker_copied_from_verified_owner": true,
+    "fixture_deletion_only": 121,
+    "sequence_next": 131,
+    "historical_issued_bound": 126,
+    "copy_data_false_basis": "Igualdad completa con el corte congelado"
+  },
+  "finished_at_utc": "2026-11-15T18:40:59.872053+00:00",
+  "replacement": {
+    "container": "sig-tec-rejoin-lab-cartago-recovered",
+    "port": 58436,
+    "archive_volume": "sig-tec-rejoin-lab_cartago_recovered_wal"
+  },
+  "checks": {
+    "old_owner_still_stopped": true,
+    "new_owner_only": true,
+    "all_geography_converged": true,
+    "insert_update_delete_both_hops": true,
+    "incoming_replication": true,
+    "two_phase_retry": true,
+    "sequence_class_and_high_water": true,
+    "prepared_transactions": 0,
+    "outsiders_unchanged": true,
+    "no_old_slots_or_subscriptions_deleted": true
+  },
+  "final_read_only_verification": {
+    "executed_at_utc": "2026-11-15T18:54:53.100076+00:00",
+    "replication_catalogs": {
+      "central": {
+        "enabled_subscriptions": 5,
+        "n": 40,
+        "ready": true
+      },
+      "cartago": {
+        "enabled_subscriptions": 1,
+        "n": 33,
+        "ready": true
+      },
+      "san_jose": {
+        "enabled_subscriptions": 1,
+        "n": 33,
+        "ready": true
+      },
+      "san_carlos": {
+        "enabled_subscriptions": 1,
+        "n": 33,
+        "ready": true
+      },
+      "alajuela": {
+        "enabled_subscriptions": 1,
+        "n": 33,
+        "ready": true
+      },
+      "limon": {
+        "enabled_subscriptions": 1,
+        "n": 33,
+        "ready": true
+      }
+    },
+    "all_geography_converged": true,
+    "prepared_transactions": 0,
+    "single_owner": true
+  }
+}
