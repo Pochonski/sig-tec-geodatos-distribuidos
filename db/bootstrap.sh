@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-for required in PGPASSWORD SIGTEC_CARTAGO_PASSWORD SIGTEC_SAN_CARLOS_PASSWORD SIGTEC_REPLICATION_PASSWORD; do
+for required in PGPASSWORD SIGTEC_CARTAGO_PASSWORD SIGTEC_SAN_JOSE_PASSWORD SIGTEC_SAN_CARLOS_PASSWORD SIGTEC_ALAJUELA_PASSWORD SIGTEC_LIMON_PASSWORD SIGTEC_REPLICATION_PASSWORD; do
     if [[ -z "${!required:-}" ]]; then
         echo "Falta $required en .env" >&2
         exit 1
@@ -9,12 +9,31 @@ for required in PGPASSWORD SIGTEC_CARTAGO_PASSWORD SIGTEC_SAN_CARLOS_PASSWORD SI
 done
 
 # libpq connection strings stored by subscriptions use these passwords without escaping.
-for secret in SIGTEC_CARTAGO_PASSWORD SIGTEC_SAN_CARLOS_PASSWORD SIGTEC_REPLICATION_PASSWORD; do
+for secret in SIGTEC_CARTAGO_PASSWORD SIGTEC_SAN_JOSE_PASSWORD SIGTEC_SAN_CARLOS_PASSWORD SIGTEC_ALAJUELA_PASSWORD SIGTEC_LIMON_PASSWORD SIGTEC_REPLICATION_PASSWORD; do
     if [[ ! "${!secret}" =~ ^[A-Za-z0-9]{24,}$ ]]; then
         echo "$secret requiere al menos 24 caracteres alfanuméricos" >&2
         exit 1
     fi
 done
+
+campuses=(cartago san_jose san_carlos alajuela limon)
+declare -A campus_ids=(
+    [cartago]=1 [san_jose]=2 [san_carlos]=3 [alajuela]=4 [limon]=5
+)
+declare -A upstream_publications=(
+    [cartago]=pub_cartago_edificios
+    [san_jose]=pub_san_jose_capas
+    [san_carlos]=pub_san_carlos_edificios
+    [alajuela]=pub_alajuela_capas
+    [limon]=pub_limon_capas
+)
+declare -A downstream_publications=(
+    [cartago]=pub_san_jose_capas,pub_san_carlos_edificios,pub_alajuela_capas,pub_limon_capas,pub_layer_styles
+    [san_jose]=pub_cartago_edificios,pub_san_carlos_edificios,pub_alajuela_capas,pub_limon_capas,pub_layer_styles
+    [san_carlos]=pub_cartago_edificios,pub_san_jose_capas,pub_alajuela_capas,pub_limon_capas,pub_layer_styles
+    [alajuela]=pub_cartago_edificios,pub_san_jose_capas,pub_san_carlos_edificios,pub_limon_capas,pub_layer_styles
+    [limon]=pub_cartago_edificios,pub_san_jose_capas,pub_san_carlos_edificios,pub_alajuela_capas,pub_layer_styles
+)
 
 psql_node() {
     local node="$1"
@@ -25,14 +44,18 @@ psql_node() {
 run_file() {
     local node="$1" file="$2"
     psql_node "$node" -v "node=$node" \
+        -v "campus_id=${campus_ids[$node]:-0}" \
         -v "is_cartago=$([[ "$node" == cartago ]] && echo true || echo false)" \
+        -v "is_san_jose=$([[ "$node" == san_jose ]] && echo true || echo false)" \
         -v "is_san_carlos=$([[ "$node" == san_carlos ]] && echo true || echo false)" \
+        -v "is_alajuela=$([[ "$node" == alajuela ]] && echo true || echo false)" \
+        -v "is_limon=$([[ "$node" == limon ]] && echo true || echo false)" \
         -f "/db/$file"
 }
 
 wait_ready() {
-    local node="$1" subscription="$2" expected="$3" remaining=60
-    local result
+    local node="$1" subscription="$2" expected="$3" remaining=300
+    local result='0:0'
     while (( remaining > 0 )); do
         result=$(psql_node "$node" -At -c "
             SELECT count(*)::text || ':' || count(*) FILTER (WHERE r.srsubstate = 'r')::text
@@ -62,7 +85,7 @@ check_subscription() {
     fi
 }
 
-for node in central cartago san_carlos; do
+for node in central "${campuses[@]}"; do
     echo "Preparando esquema de $node"
     run_file "$node" schema.sql
     run_file "$node" seed.sql
@@ -70,21 +93,28 @@ for node in central cartago san_carlos; do
 done
 
 # Create named slots before subscriptions so a retry can resume after a partial bootstrap.
-psql_node cartago -v slot_name=slot_central_cartago -f /db/slot.sql
-psql_node san_carlos -v slot_name=slot_central_san_carlos -f /db/slot.sql
+for campus in "${campuses[@]}"; do
+    psql_node "$campus" -v "slot_name=slot_central_$campus" -f /db/slot.sql
+done
 run_file central subscriptions.sql
-check_subscription central sub_central_cartago slot_central_cartago pub_cartago_edificios
-check_subscription central sub_central_san_carlos slot_central_san_carlos pub_san_carlos_edificios
-wait_ready central sub_central_cartago 1
-wait_ready central sub_central_san_carlos 1
+for campus in "${campuses[@]}"; do
+    check_subscription central "sub_central_$campus" "slot_central_$campus" "${upstream_publications[$campus]}"
+done
+for campus in "${campuses[@]}"; do
+    wait_ready central "sub_central_$campus" 8
+done
 
-psql_node central -v slot_name=slot_cartago_central -f /db/slot.sql
-psql_node central -v slot_name=slot_san_carlos_central -f /db/slot.sql
-run_file cartago subscriptions.sql
-run_file san_carlos subscriptions.sql
-check_subscription cartago sub_cartago_central slot_cartago_central pub_san_carlos_edificios,pub_layer_styles
-check_subscription san_carlos sub_san_carlos_central slot_san_carlos_central pub_cartago_edificios,pub_layer_styles
-wait_ready cartago sub_cartago_central 2
-wait_ready san_carlos sub_san_carlos_central 2
+for campus in "${campuses[@]}"; do
+    psql_node central -v "slot_name=slot_${campus}_central" -f /db/slot.sql
+done
+for campus in "${campuses[@]}"; do
+    run_file "$campus" subscriptions.sql
+done
+for campus in "${campuses[@]}"; do
+    check_subscription "$campus" "sub_${campus}_central" "slot_${campus}_central" "${downstream_publications[$campus]}"
+done
+for campus in "${campuses[@]}"; do
+    wait_ready "$campus" "sub_${campus}_central" 33
+done
 
-echo 'SIG-TEC: Cartago, central y San Carlos sincronizados.'
+echo 'SIG-TEC: central y los cinco campus sincronizados.'

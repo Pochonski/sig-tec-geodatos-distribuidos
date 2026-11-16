@@ -20,3 +20,7 @@ backups/
 wal/
 *.dump
 *.backup
+
+# Archivos generados por Python
+__pycache__/
+*.py[cod]

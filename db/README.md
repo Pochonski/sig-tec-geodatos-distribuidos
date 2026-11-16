@@ -1,50 +1,55 @@
-# Primer corte de la base distribuida
+# Base distribuida de SIG-TEC
 
-Este corte levanta Cartago, el nodo central y San Carlos con la capa `sig.edificios`. Las tres bases se llaman `sig_tec` y escuchan en `127.0.0.1:55431`, `127.0.0.1:55430` y `127.0.0.1:55433`, respectivamente. Cada nodo conserva su propio volumen. [Diseño completo](../docs/diseno.md)
+La instalación local usa seis bases `sig_tec`: un nodo central y los campus Cartago, San José, San Carlos, Alajuela y Limón. Cada campus es dueño de sus ocho tablas físicas. Las vistas `sig` reúnen los datos propios y las copias recibidas por replicación lógica. El central sirve la autenticación y recibe los datos de los cinco campus. [Contrato de datos](../docs/diseno.md) · [Criterios de aceptación](../docs/validacion.md)
+
+| Nodo | Puerto local | Cuenta de demostración | Contraseña en `.env` |
+| --- | ---: | --- | --- |
+| Central | `55430` | Las cinco cuentas | `SIGTEC_ADMIN_PASSWORD` para administrar |
+| Cartago | `55431` | `demo_cartago` | `SIGTEC_CARTAGO_PASSWORD` |
+| San José | `55432` | `demo_san_jose` | `SIGTEC_SAN_JOSE_PASSWORD` |
+| San Carlos | `55433` | `demo_san_carlos` | `SIGTEC_SAN_CARLOS_PASSWORD` |
+| Alajuela | `55434` | `demo_alajuela` | `SIGTEC_ALAJUELA_PASSWORD` |
+| Limón | `55435` | `demo_limon` | `SIGTEC_LIMON_PASSWORD` |
 
 ## Arranque en Windows
 
-1. Copiar `.env.example` a `.env` en la raíz y llenar las cuatro contraseñas con valores alfanuméricos distintos de 24 caracteres o más. El archivo `.env` está excluido de Git.
-2. Desde la raíz del repositorio, ejecutar:
-
-   ```powershell
-   docker compose up -d --wait
-   docker compose run --rm bootstrap
-   docker compose run --rm bootstrap /db/smoke.sh
-   ```
-
-El bootstrap crea extensiones, tablas, cuentas, vistas, publicaciones, slots y suscripciones. Sincroniza primero las tablas originales en el central y después las copias de consulta en los campus. Se puede repetir después de una interrupción conservando los volúmenes. La semilla se aplica una vez por campus, incluso si un edificio de prueba se borra luego.
-
-Al repetir el bootstrap con volúmenes existentes, conservar las mismas contraseñas en `.env`. Las conexiones de replicación guardan la contraseña usada al crear cada suscripción; cambiarlas requiere actualizar también esas conexiones.
-
-Los dos usuarios de prueba son `demo_cartago` y `demo_san_carlos`. Cada uno usa la contraseña de su variable en `.env`, se autentica en el central mediante `auth.mi_campus()` y edita la vista de su propio nodo. La vista contiene los dos edificios originales. La tabla `public.layer_styles` queda preparada para que Joyce publique los estilos en el central.
-
-## Prueba con QGIS 3.44 LTR
-
-El script usa el proveedor PostgreSQL de la instalación de QGIS y realiza altas, cambios de atributos y geometría, intento de edición ajena y bajas en ambos campus. Desde PowerShell:
+Desde la raíz del repositorio, copiar `.env.example` a `.env` y establecer siete contraseñas locales distintas: la de administración, la de replicación y una por campus. Usar valores alfanuméricos de al menos 24 caracteres. `.env` está excluido de Git.
 
 ```powershell
-Get-Content .env | ForEach-Object {
-    $name, $value = $_ -split '=', 2
-    if ($name -in @('SIGTEC_CARTAGO_PASSWORD', 'SIGTEC_SAN_CARLOS_PASSWORD')) {
-        [Environment]::SetEnvironmentVariable($name, $value, 'Process')
-    }
-}
+Copy-Item .env.example .env
+notepad .env
+docker compose up -d --wait
+docker compose run --rm bootstrap
+docker compose run --rm bootstrap /db/smoke.sh
+```
+
+El primer bootstrap crea PostGIS, ocho tablas por campus, cuentas, vistas, publicaciones, slots y suscripciones. Cada campus carga un objeto ficticio por capa; después de la sincronización hay cinco filas en cada vista y 40 IDs globales distintos. El script SQL abre conexiones TCP con las cinco cuentas, verifica geometría, SRID, autenticación, permisos, transacciones y CRUD temporal en las 40 combinaciones campus/capa. Comprueba que cada alta, cambio y baja converge en el central y en los otros cuatro campus. Las pruebas no cambian las filas de muestra. Puede tardar varios minutos.
+
+El bootstrap se puede repetir después de una interrupción. Conservar las mismas contraseñas de `.env`: las suscripciones guardan sus credenciales al crearse. Para verificar la repetición, ejecutar de nuevo los dos últimos comandos. `db/smoke.sh` exige cinco suscripciones activas en el central y una en cada campus, sin duplicados; el inventario final debe seguir en 40 filas. Las secuencias sí avanzan por los IDs temporales utilizados durante la prueba.
+
+## QGIS 3.44 LTR
+
+El script usa el proveedor PostgreSQL de QGIS, lee las contraseñas de `.env` y abre las ocho vistas de cada uno de los cinco campus. Ejecuta altas, cambios de atributos y geometría, intentos de edición ajena y bajas temporales distribuidas entre las ocho capas. Desde PowerShell:
+
+```powershell
 & 'C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat' 'db/qgis_smoke.py'
 ```
 
-Ajustar la ruta del ejecutable si QGIS 3.44 LTR está instalado en otra carpeta o revisión.
+Ajustar la ruta si se instaló otra revisión de QGIS 3.44 LTR. El script prueba las vistas directamente; no depende del complemento de Joyce. La prueba de inicio de sesión, carga automática y estilos desde el complemento se realiza al integrar el PR de Joyce.
 
-Para inspeccionar las capas en QGIS Desktop, crear una conexión PostgreSQL para cada campus con la base `sig_tec`, el puerto correspondiente y su usuario de prueba. Elegir `sig.edificios`, la columna geométrica `geom` y `id` como clave de la vista. La edición de una fila del otro campus debe producir un error de permisos. [Capas PostgreSQL en QGIS](https://docs.qgis.org/3.44/en/docs/user_manual/managing_data_source/supported_data.html#postgresql-database)
+Para inspeccionar las capas en QGIS Desktop, crear una conexión PostgreSQL por campus con `127.0.0.1`, la base `sig_tec`, el puerto y la cuenta de la tabla. Abrir las ocho vistas del esquema `sig`, seleccionar `geom` como columna geométrica e `id` como clave única. Cada sesión debe mostrar un objeto de cada campus por capa. La edición de un objeto ajeno debe devolver un error de permisos. [Conexiones PostgreSQL en QGIS](https://docs.qgis.org/3.44/en/docs/user_manual/managing_data_source/supported_data.html#postgresql-database)
 
-## Comprobaciones y diagnóstico
+## Repetición, desconexión y diagnóstico
 
-La prueba SQL abre conexiones TCP con las cuentas reales y verifica autenticación, permisos de las vistas, CRUD en ambos sentidos, `ROLLBACK` y convergencia de los dos saltos. El bootstrap espera hasta 60 segundos por cada suscripción e informa qué nodo sigue sincronizando. Para inspeccionar el estado:
+Los siguientes comandos muestran el estado de los seis servicios y las suscripciones. Cada campus tiene una suscripción al central que combina cuatro publicaciones de datos remotos y la de estilos. El central tiene una suscripción hacia cada campus.
 
 ```powershell
 docker compose ps
-docker compose exec central psql -U postgres -d sig_tec -c 'SELECT subname, subenabled FROM pg_subscription'
-docker compose exec central psql -U postgres -d sig_tec -c 'SELECT slot_name, active FROM pg_replication_slots'
+docker compose exec central psql -U postgres -d sig_tec -c 'SELECT subname, subenabled FROM pg_subscription ORDER BY subname'
+docker compose exec central psql -U postgres -d sig_tec -c 'SELECT slot_name, active FROM pg_replication_slots ORDER BY slot_name'
+docker compose exec san_carlos psql -U postgres -d sig_tec -c 'SELECT subname, subenabled FROM pg_subscription ORDER BY subname'
 ```
 
-Para demostrar la recuperación de una desconexión, detener San Carlos, insertar un edificio en la vista de Cartago y arrancar de nuevo San Carlos. El central recibe el cambio durante la desconexión y San Carlos lo recibe al reconectarse. Repetir el bootstrap después de la prueba conserva los datos y las suscripciones.
+Para la prueba de convergencia tras desconexión, detener San Carlos, insertar desde la vista de Cartago un edificio temporal y confirmar que aparece en el central. Arrancar San Carlos y sondear `sig.edificios` hasta que vea el mismo ID. Borrar después la fila desde Cartago y comprobar la baja en ambos destinos. Usar `docker compose stop san_carlos` y `docker compose start san_carlos`; detener un nodo no elimina su volumen ni sus slots.
+
+La comprobación de que una **semilla eliminada no reaparece** requiere modificar una fila de muestra. Hacerla en una copia descartable de los volúmenes: guardar una fila propia en una tabla auxiliar, eliminarla de su tabla física, repetir `docker compose run --rm bootstrap` y verificar que sigue ausente en origen y destinos. Restaurar la fila desde la copia auxiliar y esperar la replicación si se desea conservar esa instalación. El marcador `sig.seed_aplicada` impide que el bootstrap vuelva a sembrarla. La repetición habitual de `db/smoke.sh` verifica los conteos y la estabilidad de las suscripciones sin eliminar semillas.
