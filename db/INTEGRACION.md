@@ -85,6 +85,22 @@ integrado esté instalado en el perfil activo. La prueba automatizada con
 `python-qgis-ltr.bat` carga directamente esta versión y verifica inicio de
 sesión, estilos, ocho capas, CRUD, edición ajena y cambios de sesión.
 
+## Secuencia propuesta para fusionar los PR
+
+1. Fusionar #1 en `main` con un merge commit. Cambiar la base de #3 a `main`
+   y fusionarlo también con un merge commit.
+2. Revisar y fusionar #2 (Joyce) y #4 (Armando) en `main`, conservando sus
+   commits. #4 permanece en borrador hasta recibir el visto bueno de Joseph.
+3. Cambiar la base de #5 a `main`, revisar que el diff solo contenga la
+   integración propia de Joseph y fusionarlo. #5 también sigue en borrador.
+
+#5 ya incluye como ancestros los commits de Joyce y Armando que están en #2 y
+#4. Los merge commits permiten que Git reconozca esos cambios cuando se
+fusionen sus PR individuales. Si el equipo elige *squash* o *rebase* para
+ellos, habrá que reconstruir y revisar el diff de #5 antes de fusionarlo. Los
+PR actuales no tienen comprobaciones CI ni revisiones aprobadas en GitHub; las
+pruebas locales documentadas aquí son la evidencia disponible.
+
 ## Instalación existente de Joseph
 
 El proyecto Compose de la carpeta original es `iiiproyectobasesii` y sus seis
@@ -96,6 +112,12 @@ el JSON local debe usar `"project": "iiiproyectobasesii"` y el mismo archivo
 `.env` que utiliza la base actual. No usar el proyecto de prueba para operar
 sobre sus datos.
 
+La actualización debe ejecutarse desde un checkout estable de `main` con #5
+fusionado. El Compose integrado monta `./ops/start-postgres.sh` y
+`./ops/archive-wal.sh` en los seis contenedores: eliminar un worktree temporal
+desde el que se hayan creado dejaría esos montajes sin sus archivos. La
+herramienta WAL también exige `main` para operar sobre `iiiproyectobasesii`.
+
 El Compose integrado conserva los seis volúmenes PGDATA y los parámetros de
 replicación; añade un volumen WAL persistente por nodo. Activar el archivado
 reinicia los contenedores. Para un PITR futuro se debe generar un respaldo
@@ -103,6 +125,10 @@ físico **después** de activar el archivado y conservar los segmentos WAL
 necesarios. La retención de WAL, el corte de un nodo y la resolución de cambios
 de QGIS posteriores al punto recuperado requieren una decisión antes de
 reincorporar una copia. El ensayo de laboratorio no sustituye ese plan.
+No usar `docker compose down -v` sobre esta instalación. Volver al Compose
+anterior solo desactiva los parámetros nuevos; no deshace migraciones SQL. Una
+reversión completa exige detener los seis nodos y restaurar juntas las seis
+copias previas, antes de reabrir conexiones de QGIS o replicación.
 
 ### Auditoría previa del 16 de noviembre de 2026
 
