@@ -1,0 +1,233 @@
+{
+  "verifications": [
+    {
+      "executed_at_utc": "2026-11-15T02:22:43.858308+00:00",
+      "nodes": {
+        "central": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /opt/sig-tec-ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "replica"
+          },
+          "volume": "sig-tec-ops_central_wal",
+          "segment": "000000010000000000000006",
+          "size_bytes": 16777216,
+          "sha256": "d293e17b2bb7b9af12c43758eb4b2bdf3743644c107404440d582231dd7777e2",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 0,
+            "last_archived_wal": null,
+            "last_archived_time": null,
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-13T05:19:05.241726+00:00"
+          },
+          "after": {
+            "archived_count": 1,
+            "last_archived_wal": "000000010000000000000006",
+            "last_archived_time": "2026-11-15T02:22:41.913527+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-13T05:19:05.241726+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "cartago": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /opt/sig-tec-ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "replica"
+          },
+          "volume": "sig-tec-ops_cartago_wal",
+          "segment": "000000010000000000000006",
+          "size_bytes": 16777216,
+          "sha256": "cbb896adfb948c6e6e179151ba86e2fb574f8fa34d56a5d93f2313685ed50b5f",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 0,
+            "last_archived_wal": null,
+            "last_archived_time": null,
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-13T05:19:05.002013+00:00"
+          },
+          "after": {
+            "archived_count": 1,
+            "last_archived_wal": "000000010000000000000006",
+            "last_archived_time": "2026-11-15T02:22:42.660910+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-13T05:19:05.002013+00:00"
+          },
+          "failed_count_delta": 0
+        }
+      }
+    },
+    {
+      "executed_at_utc": "2026-11-15T02:23:07.344804+00:00",
+      "nodes": {
+        "central": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /opt/sig-tec-ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "replica"
+          },
+          "volume": "sig-tec-ops_central_wal",
+          "segment": "000000010000000000000007",
+          "size_bytes": 16777216,
+          "sha256": "c1c20470ce2fe965acbb1f0543d6984399cb3049a93883c9fd8b8c5d0985013e",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 1,
+            "last_archived_wal": "000000010000000000000006",
+            "last_archived_time": "2026-11-15T02:22:41.913527+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-13T05:19:05.241726+00:00"
+          },
+          "after": {
+            "archived_count": 2,
+            "last_archived_wal": "000000010000000000000007",
+            "last_archived_time": "2026-11-15T02:23:05.319685+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-13T05:19:05.241726+00:00"
+          },
+          "failed_count_delta": 0
+        },
+        "cartago": {
+          "settings": {
+            "archive_mode": "on",
+            "archive_command": "/bin/sh /opt/sig-tec-ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
+            "max_prepared_transactions": "10",
+            "wal_level": "replica"
+          },
+          "volume": "sig-tec-ops_cartago_wal",
+          "segment": "000000010000000000000007",
+          "size_bytes": 16777216,
+          "sha256": "fa08fe35a5719a0031037697437ecce14e0b074676043c5bf224c548e9a92bc6",
+          "readable_by_postgres": true,
+          "pg_waldump": "ok",
+          "before": {
+            "archived_count": 1,
+            "last_archived_wal": "000000010000000000000006",
+            "last_archived_time": "2026-11-15T02:22:42.660910+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-13T05:19:05.002013+00:00"
+          },
+          "after": {
+            "archived_count": 2,
+            "last_archived_wal": "000000010000000000000007",
+            "last_archived_time": "2026-11-15T02:23:06.132506+00:00",
+            "failed_count": 0,
+            "last_failed_wal": null,
+            "last_failed_time": null,
+            "stats_reset": "2026-11-13T05:19:05.002013+00:00"
+          },
+          "failed_count_delta": 0
+        }
+      }
+    }
+  ],
+  "base_commit": "f9970e3356f1072f17a4cfa80b0d00dd83b7f64a",
+  "preflight": {
+    "host_free_bytes": 167506374656,
+    "git_status": "M ops/.gitignore\n M ops/compose.yaml\n?? ops/archive-wal.sh\n?? ops/start-postgres.sh\n?? ops/test_archive_wal.py\n?? ops/wal.py",
+    "nodes": {
+      "central": {
+        "data_volume": "sig-tec-ops_central_data",
+        "settings": {
+          "archive_mode": "off",
+          "archive_command": "(disabled)",
+          "max_prepared_transactions": "10",
+          "wal_level": "replica"
+        },
+        "archiver": {
+          "archived_count": 0,
+          "last_archived_wal": null,
+          "last_archived_time": null,
+          "failed_count": 0,
+          "last_failed_wal": null,
+          "last_failed_time": null,
+          "stats_reset": "2026-11-13T05:19:05.241726+00:00"
+        },
+        "free_bytes": 167506374656
+      },
+      "cartago": {
+        "data_volume": "sig-tec-ops_cartago_data",
+        "settings": {
+          "archive_mode": "off",
+          "archive_command": "(disabled)",
+          "max_prepared_transactions": "10",
+          "wal_level": "replica"
+        },
+        "archiver": {
+          "archived_count": 0,
+          "last_archived_wal": null,
+          "last_archived_time": null,
+          "failed_count": 0,
+          "last_failed_wal": null,
+          "last_failed_time": null,
+          "stats_reset": "2026-11-13T05:19:05.002013+00:00"
+        },
+        "free_bytes": 167506374656
+      }
+    }
+  },
+  "protected_rows": {
+    "ops.requests": 30,
+    "ops.decisions": 30,
+    "ops.audit": 22,
+    "ops.applied_operations": 22,
+    "cartago.edificios": 31
+  },
+  "previous_rows_unchanged": true,
+  "data_volumes_unchanged": true,
+  "other_containers_unchanged": true,
+  "prepared_transactions": 0,
+  "tests": [
+    {
+      "command": "python3 -B ops/test_archive_wal.py",
+      "tests": 5,
+      "exit_code": 0
+    },
+    {
+      "command": "ops/.venv/bin/python -B ops/test_wal_inventory.py",
+      "tests": 1,
+      "exit_code": 0
+    },
+    {
+      "command": "ops/.venv/bin/python -B ops/test_rename.py",
+      "tests": 4,
+      "exit_code": 0
+    },
+    {
+      "command": "ops/.venv/bin/python -B ops/test_recovery.py",
+      "tests": 9,
+      "exit_code": 0
+    }
+  ],
+  "tests_recorded_at_utc": "2026-11-15T02:25:47.654082+00:00",
+  "after_test_counts": {
+    "ops.requests": 43,
+    "ops.decisions": 43,
+    "ops.audit": 31,
+    "ops.applied_operations": 31,
+    "cartago.edificios": 44
+  },
+  "application_note": "Se normalizaron IDs cortos/completos tras falso positivo; todos los contenedores ajenos se verificaron intactos."
+}

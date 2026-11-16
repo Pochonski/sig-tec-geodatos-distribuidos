@@ -1,0 +1,35 @@
+{
+  "utf8": {
+    "passed": true,
+    "tests": 6,
+    "evidence": "test_utf8.py",
+    "executed": true
+  },
+  "platform": "Windows",
+  "six_node_integration": {
+    "passed": true,
+    "evidence": "integrated-results.json",
+    "executed": true
+  },
+  "python": "3.13.5",
+  "status": "passed",
+  "executed_at_utc": "2026-11-16T03:04:36.9087894Z",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "evidences": [
+    "windows-results.json",
+    "integrated-results.json",
+    "recovery-results.json"
+  ],
+  "migrations": {
+    "passed": true,
+    "evidence": "migrate.py",
+    "executed": true
+  },
+  "recovery_2pc": {
+    "passed": 9,
+    "evidence": "recovery-results.json",
+    "executed": 9
+  },
+  "integration_requested": true,
+  "powershell": "7.6.9"
+}
