@@ -123,7 +123,8 @@ hicieron seis copias comprimidas de los volúmenes detenidos en
 `backups/preintegracion-2026-11-16/`, excluido de Git. Cada archivo pasó la
 lectura completa de `tar`, tiene SHA-256 registrado en `manifest.json` y su
 PGDATA reportó un apagado limpio. Se restringió la ACL del `.env` original a
-Joseph, SYSTEM y Administradores, sin mostrar ni cambiar las contraseñas.
+Joseph, SYSTEM y Administradores, sin mostrar ni cambiar las contraseñas. La
+misma restricción se aplicó a los archivos de respaldo y su manifiesto.
 
 La actualización integrada sobre esos datos queda pendiente de fusionar las
 ramas revisadas. Al aplicarla, conservar el nombre de proyecto
