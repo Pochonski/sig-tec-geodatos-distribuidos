@@ -1,0 +1,12 @@
+[general]
+name=SIG-TEC
+qgisMinimumVersion=3.40
+qgisMaximumVersion=3.99
+description=Inicia sesión en SIG-TEC y carga las capas geográficas de los campus del TEC.
+about=Valida la cuenta en el nodo central, conecta al nodo del campus asignado y carga las ocho vistas del esquema sig con los estilos compartidos. Proyecto de Bases de Datos II del Tecnológico de Costa Rica.
+version=0.1.0
+author=Joyce (equipo SIG-TEC)
+category=Database
+tags=postgis,postgresql,tec
+icon=icono.svg
+experimental=True
