@@ -18,7 +18,10 @@ def config():
                   'nodes':{name:{'host':'127.0.0.1','port':port,'admin_password_env':f'OPS_{name.upper()}_PASSWORD',
                                  'cli_password_env':f'OPS_{name.upper()}_CLI_PASSWORD'}
                            for name,port in (('central',57430),('cartago',57431))}}
-    if not re.fullmatch(r'sig-tec[-a-z0-9]+', result['project']):
+    # El proyecto Compose de la instalación inicial de Joseph ya tiene volúmenes
+    # persistentes con este prefijo. No cambiarlo al incorporar operaciones.
+    allowed = result['project'] == 'iiiproyectobasesii' or re.fullmatch(r'sig-tec[-a-z0-9]+', result['project'])
+    if not allowed:
         raise RuntimeError('Proyecto Docker fuera del espacio sig-tec.')
     if 'central' not in result['nodes'] or set(result['nodes'])-{'central',*CAMPUSES.values()}:
         raise RuntimeError('Inventario de nodos inválido.')

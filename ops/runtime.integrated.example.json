@@ -1,7 +1,8 @@
 {
-  "project": "sig-tec-geodatos-distribuidos",
+  "project": "iiiproyectobasesii",
   "integrated": true,
   "env_file": ".env.integrated",
+  "archive_command": "/bin/sh /ops/archive-wal.sh \"%p\" \"%f\" /wal-archive",
   "nodes": {
     "central": {
       "host": "127.0.0.1",

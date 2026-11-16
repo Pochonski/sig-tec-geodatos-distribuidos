@@ -9,3 +9,5 @@ pitr-runs/
 pitr-unit-data/
 rejoin-lab/
 .runtime-state/
+runtime.integrated.json
+wal-*-results.json

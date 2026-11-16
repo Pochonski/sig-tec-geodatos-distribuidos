@@ -26,6 +26,12 @@ class InventoryTests(unittest.TestCase):
         self.assertFalse(wal.authorized_branch('feature/unsafe'))
         self.assertFalse(wal.authorized_branch(''))
 
+    def test_integration_branch_only_on_disposable_project(self):
+        with patch.object(wal, 'PROJECT', 'sig-tec-integracion'):
+            self.assertTrue(wal.authorized_branch('joseph/integracion-final'))
+        with patch.object(wal, 'PROJECT', 'iiiproyectobasesii'):
+            self.assertFalse(wal.authorized_branch('joseph/integracion-final'))
+
     def test_inventory_normalizes_docker_mount_order(self):
         mounts = [
             {'Type': 'volume', 'Name': 'data', 'Source': '/data', 'Destination': '/var/lib/postgresql/data'},

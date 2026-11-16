@@ -5,6 +5,7 @@ x-database: &database
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: ${SIGTEC_ADMIN_PASSWORD:?Set SIGTEC_ADMIN_PASSWORD in .env}
     POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+  entrypoint: [/bin/sh, /ops/start-postgres.sh]
   command:
     - postgres
     - -c
@@ -19,6 +20,10 @@ x-database: &database
     - max_worker_processes=48
     - -c
     - max_prepared_transactions=10
+    - -c
+    - archive_mode=on
+    - -c
+    - 'archive_command=/bin/sh /ops/archive-wal.sh "%p" "%f" /wal-archive'
   healthcheck:
     test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -U postgres -d sig_tec"]
     interval: 5s
@@ -32,6 +37,9 @@ services:
       - 127.0.0.1:55430:5432
     volumes:
       - central_data:/var/lib/postgresql/data
+      - central_wal:/wal-archive
+      - ./ops/archive-wal.sh:/ops/archive-wal.sh:ro
+      - ./ops/start-postgres.sh:/ops/start-postgres.sh:ro
 
   cartago:
     <<: *database
@@ -39,6 +47,9 @@ services:
       - 127.0.0.1:55431:5432
     volumes:
       - cartago_data:/var/lib/postgresql/data
+      - cartago_wal:/wal-archive
+      - ./ops/archive-wal.sh:/ops/archive-wal.sh:ro
+      - ./ops/start-postgres.sh:/ops/start-postgres.sh:ro
 
   san_jose:
     <<: *database
@@ -46,6 +57,9 @@ services:
       - 127.0.0.1:55432:5432
     volumes:
       - san_jose_data:/var/lib/postgresql/data
+      - san_jose_wal:/wal-archive
+      - ./ops/archive-wal.sh:/ops/archive-wal.sh:ro
+      - ./ops/start-postgres.sh:/ops/start-postgres.sh:ro
 
   san_carlos:
     <<: *database
@@ -53,6 +67,9 @@ services:
       - 127.0.0.1:55433:5432
     volumes:
       - san_carlos_data:/var/lib/postgresql/data
+      - san_carlos_wal:/wal-archive
+      - ./ops/archive-wal.sh:/ops/archive-wal.sh:ro
+      - ./ops/start-postgres.sh:/ops/start-postgres.sh:ro
 
   alajuela:
     <<: *database
@@ -60,6 +77,9 @@ services:
       - 127.0.0.1:55434:5432
     volumes:
       - alajuela_data:/var/lib/postgresql/data
+      - alajuela_wal:/wal-archive
+      - ./ops/archive-wal.sh:/ops/archive-wal.sh:ro
+      - ./ops/start-postgres.sh:/ops/start-postgres.sh:ro
 
   limon:
     <<: *database
@@ -67,6 +87,9 @@ services:
       - 127.0.0.1:55435:5432
     volumes:
       - limon_data:/var/lib/postgresql/data
+      - limon_wal:/wal-archive
+      - ./ops/archive-wal.sh:/ops/archive-wal.sh:ro
+      - ./ops/start-postgres.sh:/ops/start-postgres.sh:ro
 
   bootstrap:
     image: postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095
@@ -104,3 +127,9 @@ volumes:
   san_carlos_data:
   alajuela_data:
   limon_data:
+  central_wal:
+  cartago_wal:
+  san_jose_wal:
+  san_carlos_wal:
+  alajuela_wal:
+  limon_wal:
