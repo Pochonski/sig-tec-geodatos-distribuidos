@@ -1,12 +1,12 @@
 {
-  "executed_at_utc": "2026-11-15T18:31:38.015747+00:00",
+  "executed_at_utc": "2026-11-16T07:14:12.310968+00:00",
   "project": "sig-tec-rejoin-lab",
   "status": "passed",
   "campus_checks": [
     {
       "campus": "cartago",
-      "building_id": 111,
-      "operation_id": "0e61da24-7f98-40a6-87f2-563a9cf9d3b5",
+      "building_id": 46,
+      "operation_id": "a4d459b8-781e-45e1-8f91-0781c648079e",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -19,8 +19,8 @@
     },
     {
       "campus": "san_jose",
-      "building_id": 42,
-      "operation_id": "2156b727-8b22-444c-a67b-df65ca5d13fe",
+      "building_id": 47,
+      "operation_id": "f735be2a-e3dd-45fe-937a-f53fd5d50854",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -33,8 +33,8 @@
     },
     {
       "campus": "san_carlos",
-      "building_id": 43,
-      "operation_id": "231eb013-e77f-4c16-9f26-d8005d590546",
+      "building_id": 48,
+      "operation_id": "e453a59b-fd8f-46e8-8701-2dd3bd8542e2",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -47,8 +47,8 @@
     },
     {
       "campus": "alajuela",
-      "building_id": 44,
-      "operation_id": "45333b0e-f005-408c-b782-db52c8ba10c6",
+      "building_id": 49,
+      "operation_id": "578960da-1ba8-40e7-8926-0a8c39379471",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -61,8 +61,8 @@
     },
     {
       "campus": "limon",
-      "building_id": 45,
-      "operation_id": "7334138a-6a42-4467-afc0-a026fe96f244",
+      "building_id": 50,
+      "operation_id": "f042c88a-a082-47ac-b07d-4ebcfd6bdec8",
       "utf8_roundtrip": true,
       "replication_six_nodes": true,
       "geom_preserved": true,
@@ -76,5 +76,5 @@
   ],
   "all_40_geographic_tables_converged": true,
   "prepared_transactions": 0,
-  "windows_execution": "pending; estas pruebas se ejecutaron en Parrot/Linux"
+  "windows_execution": "passed"
 }

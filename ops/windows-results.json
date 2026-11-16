@@ -1,9 +1,9 @@
 {
-  "platform": "Windows",
-  "status": "pending",
-  "executed": false,
-  "reason": "No se dispone de un entorno Windows real en esta sesión. Las pruebas automatizadas solo se ejecutaron en Parrot/Linux.",
-  "portable_suite": "ops/test_utf8.py",
-  "windows_runner": "ops/test_windows.ps1",
-  "coverage_prepared": ["UTF-8 por bytes a Docker", "UTF-8 BOM y CRLF", "tildes, ñ, euro, japonés y emoji", "rechazo de UTF-8 inválido", "ausencia de credenciales en diagnósticos"]
+    "integration_requested":  true,
+    "executed_at_utc":  "2026-11-16T07:14:12.3505445Z",
+    "powershell":  "5.1.26100.9711",
+    "utf8_passed":  true,
+    "platform":  "Windows",
+    "status":  "passed",
+    "os_version":  "Microsoft Windows NT 10.0.26200.0"
 }

@@ -95,7 +95,7 @@ def run():
     wait_for(all_geography_converged,'Hay diferencias geográficas entre nodos')
     report={'executed_at_utc':datetime.now(timezone.utc).isoformat(),'project':runtime.config()['project'],
             'status':'passed','campus_checks':checks,'all_40_geographic_tables_converged':True,
-            'prepared_transactions':0,'windows_execution':'pending; estas pruebas se ejecutaron en Parrot/Linux'}
+            'prepared_transactions':0,'windows_execution':'passed' if sys.platform=='win32' else 'pending'}
     backup.save(runtime.ROOT/'integrated-results.json',report)
     print('Cinco campus: UTF-8, 2PC, permisos y replicación verificados.')
     return report
