@@ -89,8 +89,10 @@ def other_inventory(nodes):
 
 
 def authorized_branch(branch):
-    """Las ramas de entrega autorizadas; detached HEAD y otras se rechazan."""
-    return branch in ('armando/operaciones', 'main')
+    """La rama de integración solo puede operar sobre su proyecto descartable."""
+    return branch in ('armando/operaciones', 'main') or (
+        branch == 'joseph/integracion-final' and PROJECT == 'sig-tec-integracion'
+    )
 
 
 def preflight():

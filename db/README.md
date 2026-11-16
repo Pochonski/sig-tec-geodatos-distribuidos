@@ -35,7 +35,7 @@ El script usa el proveedor PostgreSQL de QGIS, lee las contraseñas de `.env` y 
 & 'C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat' 'db/qgis_smoke.py'
 ```
 
-Ajustar la ruta si se instaló otra revisión de QGIS 3.44 LTR. El script prueba las vistas directamente; no depende del complemento de Joyce. La prueba de inicio de sesión, carga automática y estilos desde el complemento se realiza al integrar el PR de Joyce.
+Ajustar la ruta si se instaló otra revisión de QGIS 3.44 LTR. El script prueba las vistas directamente. La prueba conjunta del complemento, estilos y 2PC se describe en [Integración de componentes](INTEGRACION.md).
 
 Para inspeccionar las capas en QGIS Desktop, crear una conexión PostgreSQL por campus con `127.0.0.1`, la base `sig_tec`, el puerto y la cuenta de la tabla. Abrir las ocho vistas del esquema `sig`, seleccionar `geom` como columna geométrica e `id` como clave única. Cada sesión debe mostrar un objeto de cada campus por capa. La edición de un objeto ajeno debe devolver un error de permisos. [Conexiones PostgreSQL en QGIS](https://docs.qgis.org/3.44/en/docs/user_manual/managing_data_source/supported_data.html#postgresql-database)
 

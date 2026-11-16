@@ -14,8 +14,9 @@ import runtime
 
 
 def require_lab():
-    if runtime.config()['project']!='sig-tec-rejoin-lab' or not runtime.config().get('integrated'):
-        raise RuntimeError('Esta prueba con escrituras solo se permite en sig-tec-rejoin-lab.')
+    if (runtime.config()['project'] not in ('sig-tec-rejoin-lab', 'sig-tec-integracion')
+            or not runtime.config().get('integrated')):
+        raise RuntimeError('Esta prueba con escrituras solo se permite en proyectos de laboratorio SIG-TEC.')
 
 
 def wait_for(condition, message, timeout=90):
