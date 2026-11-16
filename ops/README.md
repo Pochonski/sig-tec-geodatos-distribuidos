@@ -2,8 +2,11 @@
 
 Para perfiles Parrot/Windows, seis nodos y la reincorporación real ensayada, ver
 [INTEGRACION.md](INTEGRACION.md) y [resultados](integration-validation.json).
-La validación Windows real sigue pendiente. Los comandos siguientes conservan
-el perfil aislado predeterminado, salvo que se indique SIGTEC_OPS_CONFIG.
+En Windows, la instalación original de seis nodos ya pasó migraciones, WAL,
+respaldos y restauración lógica aislada. El renombrado 2PC, PITR y
+reincorporación se ensayaron en laboratorios de seis nodos. Los comandos
+siguientes conservan el perfil aislado predeterminado, salvo que se indique
+SIGTEC_OPS_CONFIG.
 
 ## Entorno aislado de operaciones
 
