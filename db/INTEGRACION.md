@@ -104,6 +104,34 @@ necesarios. La retención de WAL, el corte de un nodo y la resolución de cambio
 de QGIS posteriores al punto recuperado requieren una decisión antes de
 reincorporar una copia. El ensayo de laboratorio no sustituye ese plan.
 
+### Auditoría previa del 16 de noviembre de 2026
+
+Se comprobó la instalación original sin recrear sus contenedores. El proyecto
+Compose es `iiiproyectobasesii`, con seis volúmenes `*_data` montados en
+`/var/lib/postgresql/data` y los puertos `55430` a `55435` publicados solo en
+`127.0.0.1`. Los seis nodos usan PostgreSQL 17.11, `wal_level=logical` y
+`max_prepared_transactions=10`. Al iniciarlos con `docker compose start`, cada
+vista `sig.*` mostró cinco filas. El central tenía cinco suscripciones activas
+y cada campus una; todas sus tablas estaban listas, los slots estaban activos
+y no había transacciones preparadas pendientes. Las cinco cuentas de prueba
+funcionaron tanto en el central como en su campus. Se volvieron a detener los
+contenedores al terminar la revisión.
+
+En los seis nodos, `archive_mode` estaba apagado, `public.layer_styles` no
+tenía filas y el esquema `ops` aún no existía. Antes de iniciar los nodos se
+hicieron seis copias comprimidas de los volúmenes detenidos en
+`backups/preintegracion-2026-11-16/`, excluido de Git. Cada archivo pasó la
+lectura completa de `tar`, tiene SHA-256 registrado en `manifest.json` y su
+PGDATA reportó un apagado limpio. Se restringió la ACL del `.env` original a
+Joseph, SYSTEM y Administradores, sin mostrar ni cambiar las contraseñas.
+
+La actualización integrada sobre esos datos queda pendiente de fusionar las
+ramas revisadas. Al aplicarla, conservar el nombre de proyecto
+`iiiproyectobasesii` y el `.env` original; comprobar que los seis montajes de
+PGDATA apuntan a los mismos volúmenes antes de recrear contenedores. Después
+de activar WAL, publicar estilos e instalar `ops`, generar un respaldo físico
+nuevo: las copias previas no son la base de un PITR con el archivado futuro.
+
 ## Resultado de la prueba integrada
 
 En Windows con QGIS 3.44.15 y volúmenes nuevos se verificó:
@@ -126,3 +154,22 @@ En Windows con QGIS 3.44.15 y volúmenes nuevos se verificó:
 
 La prueba se hizo en `sig-tec-integracion`. Los archivos privados de prueba,
 respaldos y WAL permanecen fuera del historial de Git.
+
+### Comprobación visual de QGIS Desktop
+
+En un perfil temporal de QGIS 3.44.15 se abrió un proyecto con las ocho vistas
+de Cartago y las ocho de San Carlos. Las 16 capas fueron válidas, tenían
+EPSG:8908 y cargaron el estilo predeterminado desde el central. En el mapa
+aparecieron los símbolos y etiquetas; en la tabla `Edificios` de Cartago se
+vieron las cinco filas, una por campus. El complemento integrado se activó en
+ese perfil, apareció en **Database > SIG-TEC** y abrió su diálogo de acceso.
+
+Desde la tabla de QGIS, con la cuenta de Cartago conectada directamente a su
+nodo, se cambió el nombre de su edificio ficticio. El central y San Carlos
+recibieron el cambio; luego se restauró el nombre original y ambos nodos
+convergieron. Un intento de editar la fila de San José desde Cartago no se
+guardó, y los tres nodos consultados conservaron el dato original. La sesión
+visual del complemento no introdujo credenciales en su diálogo; el flujo de
+inicio de sesión, carga, estilos y edición del complemento se verificó además
+con `python-qgis-ltr.bat`: siete pruebas aprobadas y una omitida porque la
+instalación integrada no tiene cuenta sin campus.
