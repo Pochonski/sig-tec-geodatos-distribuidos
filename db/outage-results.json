@@ -1,0 +1,119 @@
+{
+  "project": "iiiproyectobasesii",
+  "source_commit": "dc956c9a19a206b8325a0996d409b92b0534cc56",
+  "generated_at_utc": "2026-11-24T18:02:41.430706+00:00",
+  "scenarios": [
+    {
+      "scenario": "campus",
+      "project": "iiiproyectobasesii",
+      "started_at_utc": "2026-11-24T18:00:30.905239+00:00",
+      "stopped_node": "san_carlos",
+      "original_counts": {
+        "central": 5,
+        "cartago": 5,
+        "san_jose": 5,
+        "san_carlos": 5,
+        "alajuela": 5,
+        "limon": 5
+      },
+      "temporary_id": 156,
+      "local_write_while_node_down": true,
+      "central_before_restart_seconds": 1.03,
+      "convergence_seconds": {
+        "central": 0.01,
+        "san_jose": 0.01,
+        "san_carlos": 0.03,
+        "alajuela": 0.01,
+        "limon": 0.04
+      },
+      "temporary_row_removed_everywhere": true,
+      "six_nodes_healthy": true,
+      "data_volume_mounts_unchanged": true,
+      "final_counts": {
+        "central": 5,
+        "cartago": 5,
+        "san_jose": 5,
+        "san_carlos": 5,
+        "alajuela": 5,
+        "limon": 5
+      },
+      "finished_at_utc": "2026-11-24T18:00:40.959700+00:00"
+    },
+    {
+      "scenario": "central",
+      "project": "iiiproyectobasesii",
+      "started_at_utc": "2026-11-24T18:01:16.475937+00:00",
+      "stopped_node": "central",
+      "original_counts": {
+        "central": 5,
+        "cartago": 5,
+        "san_jose": 5,
+        "san_carlos": 5,
+        "alajuela": 5,
+        "limon": 5
+      },
+      "temporary_id": 161,
+      "local_write_while_node_down": true,
+      "convergence_seconds": {
+        "central": 0.01,
+        "san_jose": 0.01,
+        "san_carlos": 0.03,
+        "alajuela": 0.03,
+        "limon": 0.02
+      },
+      "temporary_row_removed_everywhere": true,
+      "six_nodes_healthy": true,
+      "data_volume_mounts_unchanged": true,
+      "final_counts": {
+        "central": 5,
+        "cartago": 5,
+        "san_jose": 5,
+        "san_carlos": 5,
+        "alajuela": 5,
+        "limon": 5
+      },
+      "finished_at_utc": "2026-11-24T18:01:24.553959+00:00"
+    }
+  ],
+  "post_checks": {
+    "nodes": {
+      "central": {
+        "edificios": 5,
+        "prepared_transactions": 0,
+        "enabled_subscriptions": 5,
+        "active_slots": 5
+      },
+      "cartago": {
+        "edificios": 5,
+        "prepared_transactions": 0,
+        "enabled_subscriptions": 1,
+        "active_slots": 1
+      },
+      "san_jose": {
+        "edificios": 5,
+        "prepared_transactions": 0,
+        "enabled_subscriptions": 1,
+        "active_slots": 1
+      },
+      "san_carlos": {
+        "edificios": 5,
+        "prepared_transactions": 0,
+        "enabled_subscriptions": 1,
+        "active_slots": 1
+      },
+      "alajuela": {
+        "edificios": 5,
+        "prepared_transactions": 0,
+        "enabled_subscriptions": 1,
+        "active_slots": 1
+      },
+      "limon": {
+        "edificios": 5,
+        "prepared_transactions": 0,
+        "enabled_subscriptions": 1,
+        "active_slots": 1
+      }
+    },
+    "wal_check_preserved": true
+  }
+}

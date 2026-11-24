@@ -52,4 +52,26 @@ docker compose exec san_carlos psql -U postgres -d sig_tec -c 'SELECT subname, s
 
 Para la prueba de convergencia tras desconexión, detener San Carlos, insertar desde la vista de Cartago un edificio temporal y confirmar que aparece en el central. Arrancar San Carlos y sondear `sig.edificios` hasta que vea el mismo ID. Borrar después la fila desde Cartago y comprobar la baja en ambos destinos. Usar `docker compose stop san_carlos` y `docker compose start san_carlos`; detener un nodo no elimina su volumen ni sus slots.
 
+El ensayo reproducible para la instalación original ejecuta esa secuencia y
+otra con el central detenido. Requiere los seis servicios saludables, `.env`
+local y que no haya otras ediciones durante la prueba:
+
+```powershell
+python -B db/outage_demo.py --scenario campus
+python -B db/outage_demo.py --scenario central
+```
+
+En el segundo caso, iniciar sesión en el complemento QGIS **antes** de detener
+el central si se desea observar que las capas ya abiertas siguen editables.
+El script usa una conexión TCP de Cartago que permanece abierta, crea una fila
+temporal con código UUID, verifica la propagación y la borra incluso si falla
+una comprobación. Reinicia el nodo detenido en `finally` y comprueba los seis
+montajes y conteos finales; los IDs de la secuencia consumidos no se reutilizan.
+Después, comprobar `pg_prepared_xacts`, suscripciones, slots y
+`ops/wal.py check-preserved`. Los resultados del 24 de noviembre de 2026
+están en [outage-results.json](outage-results.json).
+Los tiempos de convergencia del informe empiezan después de que el nodo vuelve
+a `healthy`. El caso del central comprueba la edición SQL local; el rechazo de
+un nuevo inicio de sesión en la interfaz QGIS queda para la prueba visual.
+
 La comprobación de que una **semilla eliminada no reaparece** requiere modificar una fila de muestra. Hacerla en una copia descartable de los volúmenes: guardar una fila propia en una tabla auxiliar, eliminarla de su tabla física, repetir `docker compose run --rm bootstrap` y verificar que sigue ausente en origen y destinos. Restaurar la fila desde la copia auxiliar y esperar la replicación si se desea conservar esa instalación. El marcador `sig.seed_aplicada` impide que el bootstrap vuelva a sembrarla. La repetición habitual de `db/smoke.sh` verifica los conteos y la estabilidad de las suscripciones sin eliminar semillas.
