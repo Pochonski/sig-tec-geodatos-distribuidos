@@ -80,6 +80,23 @@ en [INTEGRACION.md](../db/INTEGRACION.md). La prueba de PITR ya se había
 completado en el proyecto de laboratorio `sig-tec-integracion`; en la
 instalación original se verificaron respaldos y restauración lógica aislada.
 
+## Desconexión y convergencia (24 de noviembre de 2026)
+
+En la instalación original se hicieron dos ensayos con edificios temporales de
+Cartago, sin modificar las filas de muestra. Con San Carlos detenido, Cartago
+confirmó el alta y el central la recibió; al reiniciar San Carlos, los seis
+nodos vieron la misma fila. Con el central detenido, una conexión ya abierta a
+Cartago confirmó otra alta local; San Carlos no la recibió hasta que volvió el
+central. En ambos casos se borró después la fila temporal y la baja convergió
+en los seis nodos.
+
+Los seis servicios terminaron saludables, con cinco edificios por nodo, slots
+activos y cero transacciones preparadas. `ops/wal.py check-preserved` aprobó la
+conservación de las filas protegidas y los montajes originales. El script y el
+informe estructurado están en el [PR #7](https://github.com/Pochonski/sig-tec-geodatos-distribuidos/pull/7).
+La prueba del central verificó una conexión SQL local; el rechazo de un nuevo
+inicio de sesión en la interfaz QGIS sigue pendiente de comprobación visual.
+
 ## Fecha de entrega
 
 Joseph confirmó para el equipo el **lunes 30 de noviembre de 2026 a las
