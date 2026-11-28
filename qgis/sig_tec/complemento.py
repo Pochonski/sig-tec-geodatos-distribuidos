@@ -5,10 +5,11 @@ from pathlib import Path
 from qgis.core import QgsProject, QgsSettings
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
+from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox, QInputDialog
 
 from .configuracion import CAPAS, Ajustes, ErrorSesion
 from .dialogo import DialogoInicioSesion
+from .mapas import AtribucionMapa, FONDO, REFERENCIA, SEDES, asegurar_fondo, cargar_referencia, extension_sede
 from .sesion import (
     CANCELAR,
     DESCARTAR,
@@ -19,6 +20,8 @@ from .sesion import (
     extension_campus,
     iniciar_sesion,
     retirar_capas,
+    PROPIEDAD_USUARIO,
+    PROPIEDAD_CAMPUS,
 )
 
 MENU = "&SIG-TEC"
@@ -76,6 +79,7 @@ class ComplementoSigTec:
     def __init__(self, iface):
         self.iface = iface
         self.acciones = []
+        self.atribucion = None
 
     def initGui(self):
         icono = QIcon(str(Path(__file__).resolve().parent / "icono.svg"))
@@ -84,16 +88,79 @@ class ComplementoSigTec:
         salir = QAction("Cerrar sesión de SIG-TEC", self.iface.mainWindow())
         salir.triggered.connect(self.cerrar_sesion)
         self.iface.addToolBarIcon(entrar)
-        self.acciones = [entrar, salir]
+        mapa = QAction("Ver mapa del campus…", self.iface.mainWindow())
+        mapa.triggered.connect(self.ver_mapa)
+        editar = QAction("Ver capas editables de la sesión", self.iface.mainWindow())
+        editar.triggered.connect(self.ver_edicion)
+        self.acciones = [entrar, salir, mapa, editar]
         for accion in self.acciones:
             self.iface.addPluginToDatabaseMenu(MENU, accion)
+        # También reponer el crédito al recargar el complemento sobre un
+        # proyecto que ya tenía el fondo, sin pedir otro inicio de sesión.
+        if any(c.customProperty(FONDO) for c in QgsProject.instance().mapLayers().values()):
+            try:
+                self._fondo()
+            except RuntimeError as error:
+                self.iface.messageBar().pushWarning("SIG-TEC", str(error))
 
     def unload(self):
         for accion in self.acciones:
             self.iface.removePluginDatabaseMenu(MENU, accion)
         if self.acciones:
             self.iface.removeToolBarIcon(self.acciones[0])
+        if self.atribucion is not None:
+            self.iface.mapCanvas().removeEventFilter(self.atribucion)
+            self.atribucion.deleteLater()
+            self.atribucion = None
         self.acciones = []
+
+    def _fondo(self):
+        asegurar_fondo()
+        if self.atribucion is None:
+            self.atribucion = AtribucionMapa(self.iface.mapCanvas())
+
+    def ver_mapa(self):
+        proyecto = QgsProject.instance()
+        actual = next((c.customProperty(PROPIEDAD_CAMPUS) for c in proyecto.mapLayers().values()
+                       if c.customProperty(PROPIEDAD_USUARIO) is not None), 1)
+        opciones = [s["nombre"] for s in SEDES.values()]
+        nombre, aceptado = QInputDialog.getItem(self.iface.mainWindow(), "Mapa del campus",
+                                               "Sede", opciones, int(actual) - 1, False)
+        if not aceptado:
+            return
+        campus_id = opciones.index(nombre) + 1
+        try:
+            self._fondo()
+            cargar_referencia(campus_id, proyecto)
+            for grupo in proyecto.layerTreeRoot().findGroups(True):
+                if grupo.customProperty(PROPIEDAD_USUARIO) is not None:
+                    grupo.setItemVisibilityChecked(False)
+                if grupo.customProperty(REFERENCIA):
+                    grupo.setItemVisibilityChecked(campus_id == 1)
+            self.iface.mapCanvas().setExtent(extension_sede(campus_id, proyecto))
+            self.iface.mapCanvas().refresh()
+        except (RuntimeError, ValueError) as error:
+            self.iface.messageBar().pushCritical("SIG-TEC", str(error))
+            return
+        detalle = "Referencia OSM local y mapa base." if campus_id == 1 else "Mapa base OpenStreetMap."
+        self.iface.messageBar().pushInfo("SIG-TEC", f"{nombre}: {detalle} Use ‘Ver capas editables’ para regresar a su sesión.")
+
+    def ver_edicion(self):
+        proyecto = QgsProject.instance()
+        propias = [c for c in proyecto.mapLayers().values()
+                   if c.customProperty(PROPIEDAD_USUARIO) is not None]
+        if not propias:
+            self.iface.messageBar().pushInfo("SIG-TEC", "Inicie sesión para cargar las capas editables de su campus.")
+            return
+        for grupo in proyecto.layerTreeRoot().findGroups(True):
+            if grupo.customProperty(PROPIEDAD_USUARIO) is not None:
+                grupo.setItemVisibilityChecked(True)
+            if grupo.customProperty(REFERENCIA):
+                grupo.setItemVisibilityChecked(False)
+        extension = extension_campus(propias, int(propias[0].customProperty(PROPIEDAD_CAMPUS)))
+        if extension is not None:
+            self.iface.mapCanvas().setExtent(extension)
+        self.iface.mapCanvas().refresh()
 
     def _decidir(self, capas):
         return preguntar_cambios(capas, QApplication.activeModalWidget() or self.iface.mainWindow())
@@ -121,6 +188,13 @@ class ComplementoSigTec:
     def _entrar(self, ajustes, usuario, clave):
         sesion = iniciar_sesion(ajustes, usuario, clave)
         carga = cargar_capas(ajustes, sesion, decidir=self._decidir)
+        try:
+            self._fondo()
+        except RuntimeError as error:
+            self.iface.messageBar().pushWarning("SIG-TEC", str(error))
+        for grupo in QgsProject.instance().layerTreeRoot().findGroups(True):
+            if grupo.customProperty(REFERENCIA):
+                grupo.setItemVisibilityChecked(False)
         guardar_ajustes(ajustes, sesion.usuario)
         extension = extension_campus(carga.capas, sesion.campus_id)
         if extension is not None:

@@ -9,6 +9,12 @@ Esta carpeta contiene la parte de QGIS de SIG-TEC:
 
 [Diseño](../docs/diseno.md) · [Validación](../docs/validacion.md) · [Reparto](../docs/reparto.md)
 
+La versión 0.2 incorpora **Ver mapa del campus…** para las cinco sedes y una
+referencia OSM local de Cartago con edificios, vías y otros objetos. Son capas
+de consulta, con fuente identificada; las ocho vistas editables conservan los
+datos de demostración. **Ver capas editables de la sesión** permite regresar a
+ellas sin perder cambios pendientes. Ver [mapas y fuentes](../docs/mapas-campus.md).
+
 | Ruta | Contenido |
 | --- | --- |
 | `sig_tec/` | Complemento para QGIS 3.40 o posterior. Valida la cuenta en el central, conecta al campus asignado y carga las vistas `sig`. |

@@ -1,0 +1,3 @@
+# Los hashes del manifiesto deben ser iguales en Windows y Linux.
+*.geojson text eol=lf
+*.json text eol=lf

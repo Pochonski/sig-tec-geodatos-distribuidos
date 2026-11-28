@@ -1,0 +1,34 @@
+{
+  "fuente": "OpenStreetMap",
+  "url_descarga": "https://api.openstreetmap.org/api/0.6/map?bbox=-83.9143,9.8474,-83.9033,9.8596",
+  "fecha_extraccion_utc": "2026-11-28T02:38:07.570410+00:00",
+  "licencia": "ODbL-1.0",
+  "atribucion": "© OpenStreetMap contributors",
+  "licencia_url": "https://www.openstreetmap.org/copyright",
+  "crs": "EPSG:4326",
+  "limite_osm": "way/40819609",
+  "osm_sha256": "d2214ea2d9fc042ced3c8634054df158629302f3e6256dcea0e5e04a36c987c8",
+  "conteos": {
+    "limite": 1,
+    "edificios": 151,
+    "carreteras": 91,
+    "aceras": 332,
+    "parqueos": 10,
+    "zonas_verdes": 6,
+    "puntos_interes": 9,
+    "iluminacion": 0,
+    "accesibilidad": 1
+  },
+  "sha256": {
+    "limite.geojson": "e37d233787570c06d739b6a50e1e37ec050b6c71ddd83136e0e5f2d66a24ed16",
+    "edificios.geojson": "62b43269c4bf76a2375e94740dedb12e6bf9ee759d8eb8cca1eabf74489234d6",
+    "carreteras.geojson": "58656ea3f3994458f19f3a0205c42c012f7c86d7f426172e395537c39d80f74a",
+    "aceras.geojson": "b34a10d0f20e9084e14832f3f70d17c4d2a53d61007de0fbeae66a1f1ab25026",
+    "parqueos.geojson": "d75bc1c1d803e02def21621ddfe5733f7d34a1a58e88442bb06c4932c9555e0e",
+    "zonas_verdes.geojson": "975cafe8ad178fb6c41c3097e9c12d5b03f8bccdf2c34d883d42c55c51450484",
+    "puntos_interes.geojson": "f72ec53bf53749834a42cbaaaf76960f23e21c3a502babd8a9c5c7eb5580b4d1",
+    "iluminacion.geojson": "cd0297b9cdb1b5e36b01342f2398daa617650b66d45457f2d1839307511fc761",
+    "accesibilidad.geojson": "8edac9381aa6bf63050735cec4c0830b655883201a664988634f490ba2408ed5"
+  },
+  "nota": "Referencia comunitaria sin validación de campo. Sin cobertura no se inventan objetos. Aceras incluye senderos y pasos peatonales OSM."
+}
