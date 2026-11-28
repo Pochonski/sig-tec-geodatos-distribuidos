@@ -1,0 +1,3 @@
+{"type":"FeatureCollection","name":"accesibilidad","features":[
+{"type":"Feature","properties":{"osm_id":"way/899755939","campus_id":1,"nombre":"","codigo_osm":"","tipo":"footway","fuente":"OpenStreetMap","url":"https://www.openstreetmap.org/way/899755939","parte":1,"id_referencia":"way/899755939#1"},"geometry":{"coordinates":[[-83.9125186,9.8545557],[-83.912612,9.8545663],[-83.9126136,9.8545369]],"type":"LineString"}}
+]}

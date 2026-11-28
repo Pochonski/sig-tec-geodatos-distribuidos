@@ -9,6 +9,12 @@ Esta carpeta contiene la parte de QGIS de SIG-TEC:
 
 [Diseño](../docs/diseno.md) · [Validación](../docs/validacion.md) · [Reparto](../docs/reparto.md)
 
+La versión 0.2 incorpora **Ver mapa del campus…** para las cinco sedes y una
+referencia OSM local de Cartago con edificios, vías y otros objetos. Son capas
+de consulta, con fuente identificada; las ocho vistas editables conservan los
+datos de demostración. **Ver capas editables de la sesión** permite regresar a
+ellas sin perder cambios pendientes. Ver [mapas y fuentes](../docs/mapas-campus.md).
+
 | Ruta | Contenido |
 | --- | --- |
 | `sig_tec/` | Complemento para QGIS 3.40 o posterior. Valida la cuenta en el central, conecta al campus asignado y carga las vistas `sig`. |
@@ -139,6 +145,7 @@ Cambiar el puerto base no basta para pasar del simulador a la integración, porq
 | Prueba | Requiere | Cubre |
 | --- | --- | --- |
 | `test_contrato.py` | Python estándar | Puertos, clasificación de errores, diccionario de capas, QML y SQL de publicación |
+| `test_mapas.py` | Python de QGIS, con Qt `offscreen` | Hashes y geometrías simples de la referencia OSM, encuadres y transformaciones, solo lectura, reutilización y conservación de ediciones al alternar vistas; no descarga teselas |
 | `test_estilos_bd.py` | Python estándar, Docker y el entorno levantado | Crea filas `SIG-TEC` duplicadas y otro estilo predeterminado, vuelve a publicar, y verifica una sola fila `SIG-TEC` predeterminada por vista en el central y en cada campus |
 | `test_qgis.py` | Python de QGIS y el entorno levantado | Inicio de sesión correcto e incorrecto, cuenta sin campus, central caído, ocho capas válidas con estilo compartido, CRUD, rechazo de edición ajena, reinicio con edición pendiente (cancelar, guardar con fallo, guardar) y cambio de Cartago a San José descartando la edición |
 | `entorno-prueba/pruebas/*.sql` | Simulador | Permisos en SQL: inventario, CRUD local, rechazo de escrituras ajenas o directas, y `auth.mi_campus()` |
