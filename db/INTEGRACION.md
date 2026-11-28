@@ -208,7 +208,12 @@ del complemento de `main`. Se abre con
 Allí aparece **Database > SIG-TEC > Iniciar sesión** y el diálogo propone
 `127.0.0.1:55430`, base `sig_tec`. El perfil `default` conserva una unión a un
 directorio temporal de la prueba anterior; usar `sig_tec_main` para la
-demostración. La entrada de credenciales en el diálogo queda para Joseph.
+demostración. El 27 de noviembre Joseph completó el ingreso manual, la carga
+de ocho capas, el guardado de una edición propia y el rechazo de una ajena.
+También se verificaron el guardado local con el central detenido, el mensaje
+de indisponibilidad al intentar otro ingreso y el reingreso después de
+recuperar el central. Los valores originales se restauraron y la réplica se
+comprobó en los seis nodos. Ver [validación](../docs/validacion.md).
 
 ## Resultado de la prueba integrada
 

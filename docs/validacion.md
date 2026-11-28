@@ -52,6 +52,9 @@ La visibilidad del nombre en las vistas de otros campus se verifica después de 
 
 El video debe durar como máximo **10 minutos**, incluyendo títulos y cierre. Usar registros y capturas de la ejecución de respaldo y restauración para mostrar el resultado dentro del tiempo.
 
+El [guion operativo](guion-demostracion.md) propone el reparto entre Joseph,
+Joyce y Armando, una duración objetivo de 9:20 y los comandos del ensayo.
+
 | Tiempo | Evidencia a mostrar |
 | --- | --- |
 | 0:00–0:55 | Topología, nodos activos y ruta de cada salto de replicación. |
