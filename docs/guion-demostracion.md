@@ -9,14 +9,18 @@ Los pasos visuales y la caída del central se comprobaron el 27 de noviembre
 en la instalación original. Las evidencias de 2PC, PITR y reincorporación
 proceden del laboratorio `sig-tec-rejoin-lab`; indicar ese proyecto y las
 fechas al mostrarlas. Este documento prepara la grabación: todavía no es un
-video ni una medición de la narración del equipo.
+registro de la lectura cronometrada de las tres voces. El 28 de noviembre se
+exportó además un video con narración sintética de **8:34,905**, capturas
+reales y evidencias históricas rotuladas. Sus archivos y comprobaciones están
+en [entrega final](entrega.md). El presupuesto de esta exposición en vivo
+sigue siendo 9:20.
 
 ## Orden y presupuesto de tiempo
 
 | Tiempo | Voz | Pantalla y acción |
 | --- | --- | --- |
 | 0:00–0:45 | Joseph | Arquitectura: seis nodos, propiedad por campus y dos saltos de réplica. Mostrar los servicios saludables y la tabla de capas del diseño. |
-| 0:45–3:00 | Joyce | Entrar con `demo_cartago`, mostrar ocho capas, estilos y EPSG:8908. Editar el edificio propio, guardar y comprobar su valor. Intentar editar el edificio ajeno, mostrar el rechazo y descartar el intento. |
+| 0:45–3:00 | Joyce | Entrar con `demo_cartago`, mostrar ocho capas, estilos y EPSG:8908. Dedicar como máximo 15 segundos al mapa de referencia y volver a las capas editables. Editar el edificio propio, guardar y comprobar su valor. Intentar editar el edificio ajeno, mostrar el rechazo y descartar el intento. |
 | 3:00–4:15 | Joseph | Mostrar el mismo ID y nombre en Cartago, central y San Carlos. Mostrar la caída del central: guardado local, nuevo ingreso rechazado, recuperación y convergencia. Restaurar el nombre original. |
 | 4:15–6:15 | Armando | Renombrado administrativo y auditoría con un UUID. Mostrar los casos antes/después de la decisión duradera, auditoría única y cero transacciones preparadas pendientes. |
 | 6:15–8:40 | Armando | Respaldos lógicos/físicos de los seis nodos. Punto de restauración, fila recuperada por PITR, aislamiento y comprobaciones de reincorporación. |
@@ -74,8 +78,11 @@ validación. La demostración usa datos ficticios.»
 ## Preparar y mostrar la instalación original
 
 Ejecutar desde la raíz estable del repositorio, después de integrar los PR
-#6 y #7. Mantener el proyecto Compose `iiiproyectobasesii` y el perfil QGIS
-`sig_tec_main`. Cerrar del encuadre `.env` y los archivos locales de credenciales.
+#6, #7 y #8. Mantener el proyecto Compose `iiiproyectobasesii` y usar el perfil
+QGIS validado `sig_tec_mapas_20261127`, con el proyecto local
+`qgis/SIG-TEC-mapas-local.qgz`. El perfil anterior `sig_tec_main` quedó sin
+responder durante la revisión de mapas; no cerrar su proceso sin comprobar
+antes sus cambios. Cerrar del encuadre `.env` y los archivos locales de credenciales.
 La contraseña se introduce manualmente y permanece oculta.
 
 ```powershell
@@ -199,8 +206,10 @@ obtener una toma nueva.
 - Se ensayó la lectura de los informes de 2PC, respaldo, PITR y reincorporación.
   Los comandos anteriores no repiten esas operaciones ni cambian sus datos.
 
-El tiempo de **9:20 es el presupuesto del guion**, no una duración observada.
-Falta que el equipo haga la lectura cronometrada y grabe/exporte el video.
-Antes de entregar, reproducir el archivo exportado completo y verificar que
-dura como máximo 10 minutos, que el texto se lee y que el audio de las tres
-voces se entiende. Entregar el código y el video en Moodle.
+El tiempo de **9:20 es el presupuesto de la exposición en vivo**, no una
+duración observada de las tres voces. El video narrado ya exportado dura
+**8:34,905**, utiliza voz sintética en español e incluye subtítulos. Se
+decodificó completo sin errores, se verificaron audio y duración y se
+revisaron fotogramas de los capítulos principales. La información de
+fuentes, generación, archivos y estado de Moodle está en
+[entrega final](entrega.md).
