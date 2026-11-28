@@ -38,7 +38,9 @@ class PruebaMapas(unittest.TestCase):
             self.assertEqual(hashlib.sha256(ruta.read_bytes()).hexdigest(), manifiesto["sha256"][ruta.name])
             features = json.loads(ruta.read_text(encoding="utf-8"))["features"]
             self.assertEqual(len(features), conteo)
-            self.assertEqual(len({f["properties"]["osm_id"] for f in features}), conteo)
+            self.assertEqual(len({f["properties"]["id_referencia"] for f in features}), conteo)
+            tipo = "Point" if nombre in ("puntos_interes", "iluminacion") else "LineString" if nombre in ("carreteras", "aceras", "accesibilidad") else "Polygon"
+            self.assertTrue(all(f["geometry"]["type"] == tipo for f in features), nombre)
             capa = QgsVectorLayer(str(ruta), nombre, "ogr")
             if features:
                 self.assertTrue(capa.isValid())
@@ -64,6 +66,7 @@ class PruebaMapas(unittest.TestCase):
 
     def test_cinco_sedes_y_transformacion(self):
         proyecto = QgsProject.instance()
+        self.mapas.configurar_transformaciones(proyecto)
         for campus in range(1, 6):
             caja = self.mapas.extension_sede(campus, proyecto)
             self.assertFalse(caja.isEmpty())
@@ -74,6 +77,23 @@ class PruebaMapas(unittest.TestCase):
         self.assertIsNone(self.mapas.cargar_referencia(2, proyecto))
         self.assertEqual(len(proyecto.mapLayers()), 1)
 
+    def test_transformaciones_explicitas_y_eleccion_previa(self):
+        proyecto = QgsProject.instance()
+        destino = QgsCoordinateReferenceSystem("EPSG:8908")
+        origen = QgsCoordinateReferenceSystem("EPSG:4326")
+        self.mapas.configurar_transformaciones(proyecto)
+        contexto = proyecto.transformContext()
+        for codigo in (4326, 3857):
+            fuente = QgsCoordinateReferenceSystem(f"EPSG:{codigo}")
+            self.assertTrue(contexto.hasTransform(fuente, destino))
+            self.assertFalse(contexto.allowFallbackTransform(fuente, destino))
+        # Una elección explícita del proyecto tiene prioridad al recargar.
+        alternativa = "+proj=pipeline +step +proj=affine +xoff=1"
+        self.assertTrue(contexto.addCoordinateOperation(origen, destino, alternativa))
+        proyecto.setTransformContext(contexto)
+        self.mapas.configurar_transformaciones(proyecto)
+        self.assertEqual(proyecto.transformContext().calculateCoordinateOperation(origen, destino), alternativa)
+
     def test_fondo_oculto_se_vuelve_a_mostrar(self):
         proyecto = QgsProject.instance()
         fondo = self.mapas.asegurar_fondo(proyecto)
@@ -82,6 +102,34 @@ class PruebaMapas(unittest.TestCase):
         self.assertIs(self.mapas.asegurar_fondo(proyecto), fondo)
         self.assertTrue(nodo.isVisible())
         self.assertEqual(len(proyecto.mapLayers()), 1)
+
+    def test_proyecto_nuevo_conserva_8908_tras_crs_de_primera_capa(self):
+        from types import SimpleNamespace
+        from sig_tec import complemento
+        proyecto = QgsProject.instance()
+        proyecto.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        canvas = QWidget()
+        canvas.setExtent = lambda extension: None
+        canvas.refresh = lambda: None
+        mensajes = []
+        barra = SimpleNamespace(pushInfo=lambda *args: None,
+                                pushCritical=lambda *args: mensajes.append(args))
+        plugin = complemento.ComplementoSigTec(SimpleNamespace(
+            mapCanvas=lambda: canvas, messageBar=lambda: barra))
+        original = complemento.cargar_referencia
+
+        def qgis_adopta_crs(*args):
+            resultado = original(*args)
+            proyecto.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+            return resultado
+
+        try:
+            with patch("sig_tec.complemento.cargar_referencia", side_effect=qgis_adopta_crs):
+                plugin.mostrar_mapa(2)
+            self.assertFalse(mensajes)
+            self.assertEqual(proyecto.crs().authid(), "EPSG:8908")
+        finally:
+            plugin.unload()
 
     def test_alternar_mapa_preserva_ediciones_y_recarga_limpia(self):
         """Ejercita acciones con objetos Qt offscreen; no controla QGIS Desktop."""

@@ -13,7 +13,7 @@ import tempfile
 import urllib.request
 import xml.etree.ElementTree as ET
 
-from qgis.core import QgsApplication, QgsGeometry, QgsVectorLayer
+from qgis.core import Qgis, QgsApplication, QgsGeometry, QgsVectorLayer
 
 ROOT = Path(__file__).resolve().parents[1]
 DESTINO = ROOT / "sig_tec" / "datos" / "cartago"
@@ -51,8 +51,16 @@ def extraer(archivo, destino=DESTINO):
             "tipo": tags.get("amenity", tags.get("highway", tags.get("landuse", tags.get("natural", "")))),
             "fuente": "OpenStreetMap", "url": f"https://www.openstreetmap.org/{tipo}/{osm_id}",
         }
-        capas[capa].append({"type": "Feature", "properties": props,
-                           "geometry": json.loads(geometria.asJson(7))})
+        esperado = (Qgis.GeometryType.Point if capa in ("puntos_interes", "iluminacion")
+                    else Qgis.GeometryType.Line if capa in ("carreteras", "aceras", "accesibilidad")
+                    else Qgis.GeometryType.Polygon)
+        partes = geometria.asGeometryCollection() if geometria.isMultipart() else [geometria]
+        if any(p.type() != esperado or p.isMultipart() for p in partes):
+            raise RuntimeError(f"Tipo de geometría no admitido en {capa}: {tipo}/{osm_id}.")
+        for numero, parte in enumerate(partes, 1):
+            propiedades = {**props, "parte": numero, "id_referencia": f"{tipo}/{osm_id}#{numero}"}
+            capas[capa].append({"type": "Feature", "properties": propiedades,
+                               "geometry": json.loads(parte.asJson(7))})
 
     agregar("limite", limite, "way", LIMITE, etiquetas[("way", LIMITE)])
     for tabla in ("multipolygons", "lines", "points"):
@@ -99,7 +107,7 @@ def extraer(archivo, destino=DESTINO):
     destino.mkdir(parents=True, exist_ok=True)
     conteos, hashes = {}, {}
     for nombre, features in capas.items():
-        features.sort(key=lambda f: f["properties"]["osm_id"])
+        features.sort(key=lambda f: f["properties"]["id_referencia"])
         ruta = destino / (nombre + ".geojson")
         # Un objeto por línea permite revisar cambios de geometría en Git sin
         # sustituir una línea que contenga toda la capa.
@@ -116,6 +124,8 @@ def extraer(archivo, destino=DESTINO):
         "crs": "EPSG:4326", "limite_osm": "way/" + LIMITE,
         "osm_sha256": hashlib.sha256(Path(archivo).read_bytes()).hexdigest(),
         "conteos": conteos, "sha256": hashes,
+        "objetos_osm": {nombre: len({f["properties"]["osm_id"] for f in features})
+                        for nombre, features in capas.items()},
         "nota": "Referencia comunitaria sin validación de campo. Sin cobertura no se inventan objetos. Aceras incluye senderos y pasos peatonales OSM.",
     }
     (destino / "fuentes.json").write_text(json.dumps(manifiesto, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")

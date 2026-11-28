@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from qgis.core import (
-    Qgis, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFillSymbol,
+    Qgis, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsDatumTransform, QgsFillSymbol,
     QgsLineSymbol, QgsMarkerSymbol, QgsPalLayerSettings, QgsProject,
     QgsRasterLayer, QgsRectangle, QgsTextBufferSettings, QgsTextFormat,
     QgsVectorLayer, QgsVectorLayerSimpleLabeling,
@@ -56,8 +56,29 @@ CAPAS_REFERENCIA = (
 )
 
 
+def configurar_transformaciones(proyecto):
+    """Fija operaciones disponibles de PROJ para Costa Rica solo en este proyecto."""
+    destino = QgsCoordinateReferenceSystem("EPSG:8908")
+    contexto = proyecto.transformContext()
+    for codigo in (4326, 3857):
+        origen = QgsCoordinateReferenceSystem(f"EPSG:{codigo}")
+        # Respetar la operación elegida previamente por el usuario, incluso
+        # si la registró en el sentido inverso.
+        if contexto.hasTransform(origen, destino):
+            continue
+        operaciones = [op for op in QgsDatumTransform.operations(origen, destino)
+                       if op.isAvailable and op.proj]
+        if not operaciones:
+            raise RuntimeError(f"No hay una transformación disponible de EPSG:{codigo} a EPSG:8908.")
+        operacion = min(operaciones, key=lambda op: op.accuracy if op.accuracy >= 0 else float("inf"))
+        if not contexto.addCoordinateOperation(origen, destino, operacion.proj, allowFallback=False):
+            raise RuntimeError(f"No se pudo configurar la transformación desde EPSG:{codigo}.")
+    proyecto.setTransformContext(contexto)
+
+
 def asegurar_fondo(proyecto=None):
     proyecto = proyecto or QgsProject.instance()
+    configurar_transformaciones(proyecto)
     if not proyecto.mapLayers() or not proyecto.crs().isValid():
         proyecto.setCrs(QgsCoordinateReferenceSystem("EPSG:8908"))
     existentes = [c for c in proyecto.mapLayers().values() if c.customProperty(FONDO)]

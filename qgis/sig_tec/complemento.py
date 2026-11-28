@@ -129,9 +129,21 @@ class ComplementoSigTec:
         if not aceptado:
             return
         campus_id = opciones.index(nombre) + 1
+        self.mostrar_mapa(campus_id)
+
+    def mostrar_mapa(self, campus_id):
+        """Muestra una sede; reutilizable desde la consola PyQGIS, sin diálogos."""
+        proyecto = QgsProject.instance()
+        proyecto_nuevo = not proyecto.mapLayers()
+        nombre = SEDES[str(campus_id)]["nombre"]
         try:
             self._fondo()
             cargar_referencia(campus_id, proyecto)
+            # QGIS Desktop puede adoptar el CRS de la primera capa añadida
+            # (XYZ o GeoJSON). Fijarlo después de cargar, en proyectos nuevos.
+            if proyecto_nuevo:
+                from qgis.core import QgsCoordinateReferenceSystem
+                proyecto.setCrs(QgsCoordinateReferenceSystem("EPSG:8908"))
             for grupo in proyecto.layerTreeRoot().findGroups(True):
                 if grupo.customProperty(PROPIEDAD_USUARIO) is not None:
                     grupo.setItemVisibilityChecked(False)
