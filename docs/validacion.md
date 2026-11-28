@@ -71,7 +71,7 @@ se añadieron seis volúmenes WAL. Los seis servicios quedaron saludables.
 | Bootstrap y migración | Diez suscripciones existentes y sus slots reutilizados; ocho vistas con cinco objetos por nodo; ocho estilos predeterminados; cero transacciones preparadas. |
 | Archivado y respaldos | Los seis nodos archivaron un segmento legible de 16 MiB sin nuevos fallos. Se crearon y verificaron seis `pg_dump` y seis `pg_basebackup`; seis restauraciones lógicas aisladas coincidieron en tablas, conteos y hashes. |
 | Proveedor QGIS 3.44.15 | `db/qgis_smoke.py` pasó con 40 vistas, 40 IDs únicos, EPSG:8908, geometrías válidas, CRUD y rechazo de edición ajena en las ocho capas. |
-| Complemento | `qgis/pruebas/test_qgis.py` aprobó siete casos y omitió uno: no se aprovisionó una cuenta sin campus. En Desktop, el perfil `sig_tec_main` cargó el complemento y mostró el diálogo con `127.0.0.1:55430` y `sig_tec`. El ingreso manual en ese diálogo queda por comprobar. |
+| Complemento | `qgis/pruebas/test_qgis.py` aprobó siete casos y omitió uno: no se aprovisionó una cuenta sin campus. En Desktop, el perfil `sig_tec_main` cargó el complemento y mostró el diálogo con `127.0.0.1:55430` y `sig_tec`. El ingreso manual, pendiente al finalizar esta ejecución, se comprobó el 27 de noviembre. |
 | Estado posterior | `ops/wal.py check-preserved` confirmó filas protegidas y montajes de los volúmenes originales, sin 2PC pendiente. |
 
 Los respaldos, informes, credenciales y el perfil QGIS local no se publican en
@@ -94,8 +94,38 @@ Los seis servicios terminaron saludables, con cinco edificios por nodo, slots
 activos y cero transacciones preparadas. `ops/wal.py check-preserved` aprobó la
 conservación de las filas protegidas y los montajes originales. El script y el
 informe estructurado están en el [PR #7](https://github.com/Pochonski/sig-tec-geodatos-distribuidos/pull/7).
-La prueba del central verificó una conexión SQL local; el rechazo de un nuevo
-inicio de sesión en la interfaz QGIS sigue pendiente de comprobación visual.
+La prueba del central del 24 de noviembre verificó una conexión SQL local. La
+comprobación visual del inicio de sesión se realizó el 27 de noviembre, como
+se describe a continuación.
+
+## Validación visual de QGIS (27 de noviembre de 2026)
+
+Se utilizó QGIS Desktop **3.44.15**, perfil `sig_tec_main`, con el complemento
+y las bases de la instalación original ejecutando `main` en `dc956c9`. Joseph
+introdujo las credenciales en los diálogos de autenticación. La edición y la
+lectura de los mensajes se hicieron en la interfaz de QGIS; la réplica se
+comprobó mediante consultas SQL de solo lectura.
+
+| Comprobación | Resultado observado |
+| --- | --- |
+| Ingreso y carga | `demo_cartago` inició sesión y cargó el grupo `SIG-TEC · Cartago` con las ocho capas. El proyecto mostró EPSG:8908 y los cinco puntos de interés, uno por campus. La tabla de edificios mostró cinco filas. |
+| Edición propia y réplica | Desde la tabla de atributos se cambió temporalmente el nombre del edificio `id=1`, `campus_id=1`, a `Biblioteca ficticia de Cartago - prueba visual 27-11`. El guardado se aplicó en Cartago y el mismo valor se observó en el central y San Carlos. Se restauró el nombre previo, `Biblioteca ficticia de Cartago - editado en QGIS`, y se comprobó en los tres nodos. |
+| Rechazo de edición ajena | La misma sesión intentó cambiar el nombre del edificio `id=3`, `campus_id=3`. QGIS informó `Solo puede editar edificios de su campus`, desde `sig.editar_capa()`. La base conservó `Laboratorio ficticio de San Carlos`. Se descartó el intento rechazado y la capa salió del modo de edición. |
+| Estilos | Se observaron símbolos y etiquetas de las capas en QGIS. Central, Cartago y San Carlos tenían ocho registros en `public.layer_styles`, todos predeterminados. Esta comprobación no incluyó publicar una nueva versión de un estilo. |
+| Guardado con el central detenido | Con la sesión de Cartago abierta se detuvo únicamente el servicio `central`. Desde QGIS se guardó para `id=1` el nombre `Biblioteca Cartago - prueba central detenido 27-11`. Cartago mostró el nuevo valor; los otros cuatro campus conservaron el anterior durante la caída. |
+| Nuevo acceso durante la caída | Al intentar iniciar sesión, el complemento mostró `El servidor central no está disponible en 127.0.0.1:55430. Intente de nuevo cuando se restablezca.` Las capas de la sesión anterior permanecieron en el proyecto. |
+| Convergencia al recuperar el central | Después de `docker compose -p iiiproyectobasesii up -d --wait central`, el nombre temporal se observó en los seis nodos. Las diez suscripciones y sus diez slots estaban activos, todas las relaciones estaban listas y no había transacciones preparadas. |
+| Limpieza | Se restauró el nombre original a través de `sig.edificios` en Cartago por SQL bajo la identidad `demo_cartago`. Se comprobó el nombre original en los seis nodos, junto con cinco objetos en cada una de las ocho capas. |
+
+El reingreso visual después de recuperar el central está pendiente de completar
+en el diálogo abierto de QGIS. La convergencia de las bases ya se comprobó;
+el mensaje de error conserva el resultado del intento hecho durante la caída
+hasta que se pulse de nuevo `Iniciar sesión`.
+
+Esta ejecución visual cubrió la edición de atributos de `edificios` desde
+Cartago. El CRUD de las ocho capas y la validez de las geometrías se habían
+verificado con las pruebas del proveedor PyQGIS descritas en la ejecución del
+16 de noviembre; no se repitieron manualmente en esta sesión.
 
 ## Fecha de entrega
 
