@@ -133,10 +133,35 @@ etiquetas de edificios y servicios; las otras cuatro sedes ocultan ese grupo.
 Se comprobó además desde PyQGIS en Desktop que los ocho conjuntos locales no
 vacíos son de solo lectura y tienen los tipos simples indicados en la tabla.
 
-La alternancia con las ocho capas de una sesión real está pendiente de cerrar
-la comprobación manual. La ventana del perfil anterior `sig_tec_main` dejó de
-responder al intentar activarla; se conservó abierta y se continuó en el perfil
-de prueba. No se guardaron ni descartaron sus ediciones.
+La comprobación de la sesión real **`demo_cartago`** también pasó el 28 de
+noviembre, después del inicio de sesión manual:
+
+| Paso | Resultado observado en QGIS Desktop |
+| --- | --- |
+| Cargar la sesión | Ocho vistas válidas, cinco objetos por vista, campus 1 y SRID 8908. |
+| Cambiar temporalmente el nombre de un edificio propio, sin guardar | El cambio quedó pendiente en el búfer de edición de QGIS. |
+| Abrir el mapa de Cartago | Se mostró la referencia y se ocultó el grupo editable; el cambio pendiente se conservó. |
+| Volver a las capas editables | Se restauró el grupo de Cartago, se ocultó la referencia y el cambio seguía pendiente. Los mismos 17 IDs de capa permanecieron cargados. |
+| Terminar la prueba | Se deshizo únicamente el cambio temporal y se cerró su edición limpia. El nombre original quedó intacto y ninguna capa tenía modificaciones pendientes. |
+| Recargar el complemento | Se conservaron las capas, sus fuentes y las cuatro acciones; se repuso el crédito. |
+| Usar Database → SIG-TEC → Ver mapa del campus… | Se abrió el selector, tomó Cartago de la sesión y cargó el mapa al aceptar. |
+
+La prueba de alternancia usó las funciones del complemento desde la consola
+PyQGIS de Desktop y verificaciones sobre la sesión real; el acceso al selector
+también se comprobó mediante el menú de la interfaz. El cambio temporal no se
+confirmó en PostgreSQL. Los tipos finales fueron `Polygon` para edificios,
+parqueos y zonas verdes; `LineString` para carreteras, aceras y accesibilidad;
+y `Point` para puntos de interés e iluminación.
+
+Se guardó en el equipo de Joseph el proyecto local
+`qgis/SIG-TEC-mapas-local.qgz`, con las 17 capas y el mapa de Cartago visible.
+Sus fuentes PostgreSQL usan referencias `authcfg`, sin contraseñas en las URI.
+El archivo está excluido de Git y se abre desde el mismo perfil de QGIS donde
+se inició la sesión. Cada compañero puede guardar su propio proyecto local.
+
+La ventana del perfil anterior `sig_tec_main` dejó de responder al intentar
+activarla; se conservó abierta y se continuó en el perfil de prueba. No se
+guardaron ni descartaron sus ediciones.
 
 La consulta SQL de `geometry_columns` del central confirmó que las ocho
 vistas `sig` conservan `Polygon`, `LineString` y `Point`, todas con SRID 8908.
