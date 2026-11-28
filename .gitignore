@@ -13,6 +13,7 @@ secrets/
 *.qgs
 *.qgz
 *.qgs~
+*.qgz~
 qgis-auth.db*
 
 # Respaldos y archivos WAL
@@ -24,3 +25,6 @@ wal/
 # Archivos generados por Python
 __pycache__/
 *.py[cod]
+
+# Video, evidencias locales y paquetes generados para Moodle
+/entrega/

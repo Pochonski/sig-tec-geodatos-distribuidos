@@ -1,0 +1,72 @@
+[
+  {
+    "id": "01-introduccion", "titulo": "SIG-TEC", "subtitulo": "Información geográfica distribuida",
+    "visual": "portada", "fuente": "Código integrado en main · capturas del 28 de noviembre de 2026",
+    "narracion": "Presentamos SIG TEC, el sistema distribuido de información geográfica de los campus del Tecnológico de Costa Rica, desarrollado por Joseph, Joyce y Armando para Bases de Datos dos. Esta demostración combina capturas reales de QGIS, consultas de la instalación original y resultados registrados del laboratorio. La narración es sintética. Veremos la arquitectura, la edición por campus, la replicación y los mecanismos de recuperación."
+  },
+  {
+    "id": "02-arquitectura", "titulo": "Seis nodos, una vista institucional", "subtitulo": "Autonomía local y consulta global",
+    "visual": "arquitectura", "fuente": "entrega/evidencias/preflight.json · instalación original, 28/11/2026",
+    "narracion": "La arquitectura tiene cinco nodos operativos y un servidor central. Cada campus dispone de una instancia independiente de PostgreSQL diecisiete con PostGIS tres punto seis, su propia base y sus volúmenes. Cartago, San José, San Carlos, Alajuela y Limón son propietarios de sus datos. La replicación tiene dos niveles: cada campus publica hacia el central, y el central redistribuye las copias a los demás. Las publicaciones por esquema evitan que varios nodos escriban sobre la misma tabla original. Los seis servicios están saludables."
+  },
+  {
+    "id": "03-modelo", "titulo": "Ocho capas con geometría definida", "subtitulo": "Identidad global y pertenencia al campus",
+    "visual": "modelo", "fuente": "db/schema.sql · geometry_columns consultado en los seis nodos",
+    "narracion": "Las ocho capas respetan los tipos del enunciado. Edificios, parqueos y zonas verdes son polígonos. Carreteras, aceras y accesibilidad son líneas. Puntos de interés e iluminación son puntos. Cada objeto tiene un identificador global entero de sesenta y cuatro bits, campus y geometría. Las secuencias de los campus avanzan de cinco en cinco, evitando colisiones entre capas y sedes. Las pruebas utilizan cuarenta objetos ficticios. Todas las geometrías se almacenan en EPSG ocho mil novecientos ocho, pendiente de confirmación institucional."
+  },
+  {
+    "id": "04-acceso", "titulo": "Autenticación y capas en QGIS", "subtitulo": "La sesión determina el nodo operativo",
+    "visual": "acceso", "fuente": "QGIS Desktop 3.44.15 · sesión manual demo_cartago",
+    "narracion": "El complemento presenta usuario, contraseña y el botón de ingreso. Valida la cuenta contra el central, obtiene el campus y conecta con su nodo operativo. La sesión utilizada es demo Cartago. Se cargan automáticamente las ocho vistas, con cinco objetos de diferentes campus por capa y los estilos compartidos almacenados en la base. El usuario consulta información global, pero solo puede modificar los objetos propios. La cuenta de QGIS recibe permisos sobre las vistas; los disparadores de PostgreSQL aplican la restricción por fila."
+  },
+  {
+    "id": "05-mapas", "titulo": "Mapas de referencia de las sedes", "subtitulo": "Consulta cartográfica separada de la edición",
+    "visual": "mapas", "fuente": "qgis/sig_tec/datos/cartago/fuentes.json · © OpenStreetMap contributors · ODbL",
+    "narracion": "La versión integrada permite abrir el mapa base de las cinco sedes. Cartago incluye además una referencia vectorial local con edificios, vías, pasos peatonales y servicios de OpenStreetMap. La fuente, la licencia y los hashes están documentados. Los objetos con varias partes se separan para conservar geometrías simples. Esta referencia es de consulta y no sustituye los datos ficticios editables ni un inventario institucional. Al volver a la sesión, se conservan sus capas y las ediciones pendientes."
+  },
+  {
+    "id": "06-edicion", "titulo": "Edición propia confirmada", "subtitulo": "id = 1 · campus_id = 1 · demo_cartago",
+    "visual": "edicion", "fuente": "Captura real y commitChanges de PyQGIS en Desktop · 28/11/2026",
+    "narracion": "Para demostrar el guardado usamos la vista de edificios desde PyQGIS, en la sesión real de QGIS Desktop. El edificio uno pertenece a Cartago. Cambiamos su nombre a Biblioteca Cartago, demostración veintiocho once, y confirmamos la edición. El proveedor devuelve éxito y la tabla muestra el nuevo nombre. La actualización atraviesa el disparador de la vista y se aplica en la tabla original del campus. La misma vista integra también los edificios de los otros cuatro campus."
+  },
+  {
+    "id": "07-replica", "titulo": "El mismo cambio en los seis nodos", "subtitulo": "Cartago → central → otros campus",
+    "visual": "replica", "fuente": "entrega/evidencias/qgis-replica.json · consultas reales del 28/11/2026",
+    "narracion": "Después del guardado consultamos el mismo identificador en los seis nodos. Todos muestran el nuevo nombre y conservan campus uno. Así comprobamos los dos saltos: la modificación llega primero al central y después a los otros campus. Las suscripciones están habilitadas y sus tablas han terminado la sincronización. La replicación es asíncrona: la edición local se confirma en Cartago y las copias convergen después. Las vistas permiten consultar los datos propios de inmediato y los remotos conforme llegan."
+  },
+  {
+    "id": "08-permisos", "titulo": "La base rechaza la edición ajena", "subtitulo": "demo_cartago intenta modificar id = 3, San Carlos",
+    "visual": "permisos", "fuente": "entrega/evidencias/qgis-permisos.json · error real del proveedor PostGIS",
+    "narracion": "A continuación intentamos modificar el edificio tres, cuyo propietario es San Carlos, usando la misma cuenta de Cartago. El guardado falla. El error real del proveedor indica: solo puede editar edificios de su campus. La restricción se ejecuta en el disparador de PostgreSQL, y no depende solamente de que un control visual esté deshabilitado. Descartamos ese intento de prueba. También restauramos el nombre original del edificio propio y comprobamos la limpieza en todos los nodos."
+  },
+  {
+    "id": "09-fallos", "titulo": "Autonomía local ante desconexiones", "subtitulo": "Evidencias previas de caída y convergencia",
+    "visual": "fallos", "fuente": "db/outage-results.json · 24/11/2026; validación visual documentada el 27/11",
+    "narracion": "Los ensayos registrados cubren dos desconexiones. Con San Carlos detenido, Cartago confirma una escritura y el central la recibe; al reiniciar San Carlos, los seis nodos convergen. Con el central detenido, una sesión ya abierta sigue guardando en Cartago, aunque los demás campus esperan la recuperación. Un nuevo ingreso informa que el central está indisponible. Esa comprobación visual se registró el veintisiete de noviembre. Al recuperar el servicio, vuelven el acceso y la propagación. Las filas temporales de ambos ensayos fueron eliminadas."
+  },
+  {
+    "id": "10-dos-fases", "titulo": "Renombre auditado con commit en dos fases", "subtitulo": "Una decisión duradera coordina dos participantes",
+    "visual": "dos_fases", "fuente": "ops/recovery-results.json · laboratorio, 16/11/2026 UTC · 9 casos aprobados",
+    "narracion": "La operación administrativa recibe un UUID, el campus, el edificio y su nuevo nombre. El campus prepara el renombre y el central prepara la auditoría. El coordinador registra la decisión de commit en una transacción separada y duradera antes de resolver las dos ramas. Los nueve casos registrados del laboratorio incluyen fallos antes y después de esa decisión. Sin decisión de commit se aborta. Con la decisión confirmada, el reinicio completa los participantes pendientes. Los marcadores del UUID evitan duplicar la auditoría cuando se reintenta."
+  },
+  {
+    "id": "11-respaldos", "titulo": "Respaldo por nodo y archivo WAL", "subtitulo": "Copias lógicas y físicas verificadas",
+    "visual": "respaldos", "fuente": "ops/backup-results.json · laboratorio; respaldos originales descritos en db/INTEGRACION.md",
+    "narracion": "Cada nodo dispone de su estrategia de respaldo. El respaldo lógico utiliza pe ge dump, y el físico utiliza pe ge base backup. El inventario registrado verifica las copias de los seis nodos y su restauración lógica aislada. Las copias físicas se comprueban con pe ge verify backup. Además, cada instancia archiva sus propios segmentos WAL. Estos registros permiten reconstruir cambios posteriores al respaldo base. La documentación distingue el laboratorio de los respaldos privados de la instalación original, sin publicar credenciales ni copias de las bases en Git."
+  },
+  {
+    "id": "12-pitr", "titulo": "Recuperación a un punto en el tiempo", "subtitulo": "La fila eliminada reaparece en una copia aislada",
+    "visual": "pitr", "fuente": "ops/pitr-results.json · sig-tec-rejoin-lab · 15/11/2026 UTC",
+    "narracion": "La evidencia de recuperación corresponde al laboratorio y conserva su fecha. Después de completar el respaldo físico se crea un punto de restauración nombrado. Se elimina el edificio de control ciento veintiuno y se archivan los WAL necesarios. Una instancia aislada, sin puertos publicados y con el archivo WAL de solo lectura, se recupera hasta ese punto. El informe confirma que se alcanzó el objetivo y que los atributos y la geometría recuperados coinciden con los anteriores a la eliminación. El origen y sus respaldos permanecen separados de la copia recuperada."
+  },
+  {
+    "id": "13-reincorporacion", "titulo": "Reincorporar sin duplicar propietarios", "subtitulo": "Datos, operaciones, secuencias y slots reconciliados",
+    "visual": "reincorporacion", "fuente": "ops/rejoin-execution-results.json · laboratorio, 15/11/2026 UTC",
+    "narracion": "La reincorporación también se ensayó en el laboratorio. El propietario anterior queda detenido y se preserva su volumen. Antes de habilitar el reemplazo se reconcilian los datos y las operaciones distribuidas, se adelanta la secuencia por encima de los identificadores ya emitidos y se revisan suscripciones y slots. El informe confirma un único propietario activo, convergencia geográfica y nuevas altas, cambios y bajas a través de ambos saltos. No repetimos una sustitución de nodos sobre la instalación original para producir esta demostración."
+  },
+  {
+    "id": "14-cierre", "titulo": "Código, documentación y evidencias", "subtitulo": "Joseph · Joyce · Armando | Bases de Datos II",
+    "visual": "cierre", "fuente": "github.com/Pochonski/sig-tec-geodatos-distribuidos · documentación del proyecto",
+    "narracion": "Terminamos con los seis nodos saludables, los nombres originales restaurados y cero transacciones preparadas pendientes. El repositorio reúne el modelo, los scripts, el complemento y los procedimientos para repetir las pruebas. EPSG ocho mil novecientos ocho sigue siendo la referencia provisional, y se mantiene la consulta al profesor sobre el escenario elegido de transacción distribuida. Los mapas comunitarios acreditan a los colaboradores de OpenStreetMap. Esta demostración usa datos ficticios de prueba y una voz sintética; las capturas y los resultados mostrados proceden de las ejecuciones documentadas."
+  }
+]

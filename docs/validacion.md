@@ -52,16 +52,11 @@ La visibilidad del nombre en las vistas de otros campus se verifica después de 
 
 El video debe durar como máximo **10 minutos**, incluyendo títulos y cierre. Usar registros y capturas de la ejecución de respaldo y restauración para mostrar el resultado dentro del tiempo.
 
-El [guion operativo](guion-demostracion.md) propone el reparto entre Joseph,
-Joyce y Armando, una duración objetivo de 9:20 y los comandos del ensayo.
-
-| Tiempo | Evidencia a mostrar |
-| --- | --- |
-| 0:00–0:55 | Topología, nodos activos y ruta de cada salto de replicación. |
-| 0:55–3:30 | Inicio de sesión en QGIS, ocho capas, estilos y edición local. Intento de edición ajena rechazado. |
-| 3:30–5:30 | Propagación Cartago → central → San Carlos y convergencia después de reiniciar un nodo. |
-| 5:30–7:40 | Renombrado 2PC, auditoría central y recuperación del coordinador después de una caída. |
-| 7:40–9:40 | Respaldos por nodo, PITR aislado, edificio recuperado y evidencia de reincorporación. |
+El [guion operativo](guion-demostracion.md) conserva el reparto entre Joseph,
+Joyce y Armando y un presupuesto de 9:20 para la exposición en vivo. La
+[entrega final](entrega.md) incluye el video con voz sintética exportado el
+28 de noviembre, de 8:34,905, y sus marcas de capítulo. Ambas versiones cubren
+arquitectura, QGIS, permisos, réplica, 2PC, respaldos, PITR y reincorporación.
 
 ## Ejecución en la instalación original (16 de noviembre de 2026)
 
@@ -125,6 +120,24 @@ Esta ejecución visual cubrió la edición de atributos de `edificios` desde
 Cartago. El CRUD de las ocho capas y la validez de las geometrías se habían
 verificado con las pruebas del proveedor PyQGIS descritas en la ejecución del
 16 de noviembre; no se repitieron manualmente en esta sesión.
+
+## Cierre técnico y video (28 de noviembre de 2026)
+
+El PR #8 se integró en `main` mediante `2c5a469`. La validación de mapas y la
+alternancia con cambios pendientes está en [mapas de las sedes](mapas-campus.md).
+Para el video se repitió el guardado propio mediante PyQGIS en la sesión real
+de QGIS Desktop, se consultó el nuevo nombre en los seis nodos y se capturó
+el rechazo real de edición de San Carlos desde `demo_cartago`. Se restauraron
+los nombres anteriores y se comprobaron las cinco filas de edificios de cada
+nodo contra la lectura previa. No quedaron cambios pendientes en QGIS.
+
+La exportación mide 8:34,905, en Full HD, con narración sintética en español
+y subtítulos. El control técnico decodificó el archivo completo, comprobó
+las pistas y el audio presente, y revisó los fotogramas principales. Las
+ejecuciones 2PC/PITR/reincorporación del laboratorio se muestran como evidencia
+histórica con su fecha. El ZIP se prepara desde un commit de Git limpio.
+La [guía de entrega](entrega.md) distingue los archivos locales listos de la
+entrega efectiva en Moodle y mantiene abiertas las consultas al profesor.
 
 ## Fecha de entrega
 
