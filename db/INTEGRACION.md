@@ -1,10 +1,11 @@
 # Integración de la base, QGIS y operaciones
 
-Esta rama reúne la base de Joseph, el complemento de Joyce y el módulo de
-operaciones de Armando para probarlos sobre **las mismas seis bases**. Los
-procedimientos de prueba usan un proyecto Compose nuevo llamado
-`sig-tec-integracion`; no se ejecutaron sobre los volúmenes de la instalación
-personal de Joseph.
+El repositorio reúne la base de Joseph, el complemento de Joyce y el módulo de
+operaciones de Armando para probarlos sobre **las mismas seis bases**. La
+primera prueba conjunta usó un proyecto Compose nuevo llamado
+`sig-tec-integracion`. Después se aplicó la integración a la instalación
+existente de Joseph, con el proyecto `iiiproyectobasesii` y sus volúmenes
+originales.
 
 ## Orden de arranque en un proyecto de prueba nuevo
 
@@ -60,6 +61,7 @@ $env:SIG_TEC_ENV = (Resolve-Path .env).Path
 python -B -m unittest discover -s qgis/pruebas -v
 $env:QT_QPA_PLATFORM = 'offscreen'
 & 'C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat' qgis/pruebas/test_qgis.py
+& 'C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat' db/qgis_smoke.py
 python -B ops/integration_checks.py
 python -B ops/test_rename.py
 python -B ops/test_recovery.py
@@ -75,6 +77,9 @@ En un perfil integrado, `backup.py` conserva el resumen versionado del
 laboratorio `ops/backup-results.json`: la ejecución nueva queda en el
 `manifest.json` privado de `ops/backups/<ID>/`. El informe WAL del proyecto
 original también queda fuera de Git.
+Si se crea por adelantado para fijar permisos, el informe debe contener JSON
+válido, por ejemplo `{"verifications":[]}`; un archivo vacío hace fallar
+`wal.py verify` después de comprobar los segmentos.
 `integration_checks.py` acepta escrituras solo en los proyectos de laboratorio
 `sig-tec-integracion` y `sig-tec-rejoin-lab`. `wal.py` admite la rama
 `joseph/integracion-final` solo con el proyecto descartable
@@ -89,21 +94,13 @@ integrado esté instalado en el perfil activo. La prueba automatizada con
 `python-qgis-ltr.bat` carga directamente esta versión y verifica inicio de
 sesión, estilos, ocho capas, CRUD, edición ajena y cambios de sesión.
 
-## Secuencia propuesta para fusionar los PR
+## Integración de los PR
 
-1. Fusionar #1 en `main` con un merge commit. Cambiar la base de #3 a `main`
-   y fusionarlo también con un merge commit.
-2. Revisar y fusionar #2 (Joyce) y #4 (Armando) en `main`, conservando sus
-   commits. #4 permanece en borrador hasta recibir el visto bueno de Joseph.
-3. Cambiar la base de #5 a `main`, revisar que el diff solo contenga la
-   integración propia de Joseph y fusionarlo. #5 también sigue en borrador.
-
-#5 ya incluye como ancestros los commits de Joyce y Armando que están en #2 y
-#4. Los merge commits permiten que Git reconozca esos cambios cuando se
-fusionen sus PR individuales. Si el equipo elige *squash* o *rebase* para
-ellos, habrá que reconstruir y revisar el diff de #5 antes de fusionarlo. Los
-PR actuales no tienen comprobaciones CI ni revisiones aprobadas en GitHub; las
-pruebas locales documentadas aquí son la evidencia disponible.
+El 16 de noviembre de 2026 se fusionaron en `main` los PR #1, #3, #2, #4 y
+#5, en ese orden, con merge commits. La base de #3 y #5 se cambió a `main`
+antes de fusionarlos. #5 incluyó únicamente los cambios propios de la
+integración después de incorporar `main` a su rama. El resultado integrado
+quedó en `dc956c9`; los resultados locales se indican más abajo.
 
 ## Instalación existente de Joseph
 
@@ -116,7 +113,7 @@ el JSON local debe usar `"project": "iiiproyectobasesii"` y el mismo archivo
 `.env` que utiliza la base actual. No usar el proyecto de prueba para operar
 sobre sus datos.
 
-La actualización debe ejecutarse desde un checkout estable de `main` con #5
+La actualización se ejecutó desde un checkout estable de `main` con #5
 fusionado. El Compose integrado monta `./ops/start-postgres.sh` y
 `./ops/archive-wal.sh` en los seis contenedores: eliminar un worktree temporal
 desde el que se hayan creado dejaría esos montajes sin sus archivos. La
@@ -156,12 +153,67 @@ PGDATA reportó un apagado limpio. Se restringió la ACL del `.env` original a
 Joseph, SYSTEM y Administradores, sin mostrar ni cambiar las contraseñas. La
 misma restricción se aplicó a los archivos de respaldo y su manifiesto.
 
-La actualización integrada sobre esos datos queda pendiente de fusionar las
-ramas revisadas. Al aplicarla, conservar el nombre de proyecto
-`iiiproyectobasesii` y el `.env` original; comprobar que los seis montajes de
-PGDATA apuntan a los mismos volúmenes antes de recrear contenedores. Después
-de activar WAL, publicar estilos e instalar `ops`, generar un respaldo físico
-nuevo: las copias previas no son la base de un PITR con el archivado futuro.
+Las copias previas siguen disponibles para una reversión completa. La
+actualización conservó el nombre de proyecto `iiiproyectobasesii` y el `.env`
+original; los seis montajes de PGDATA se comprobaron antes y después de
+recrear los contenedores. Las copias previas al archivado no sirven como base
+para un PITR con el WAL nuevo; por eso se generaron respaldos físicos nuevos.
+
+### Despliegue de la instalación existente el 16 de noviembre de 2026
+
+Se ejecutaron `docker compose -p iiiproyectobasesii up -d --wait` y el
+bootstrap sobre los seis volúmenes originales, sin `down -v`. Se añadieron
+seis volúmenes WAL persistentes y quedó `archive_mode=on` en cada nodo.
+Bootstrap reutilizó las diez suscripciones y sus slots; sus tablas quedaron
+listas. Se aplicó `ops/migrate.py` y se publicaron ocho
+estilos predeterminados, visibles en cada nodo. Cada una de las ocho vistas
+`sig.*` mostró cinco objetos. El edificio de Cartago editado previamente en
+QGIS conservó su nombre en los seis nodos.
+
+`ops/wal.py verify` archivó y leyó un segmento de 16 MiB en cada nodo, sin
+aumento de `failed_count`. `ops/backup.py create --node all` generó seis
+respaldos lógicos y seis físicos en el directorio privado
+`ops/backups/20261116T211337Z-560cfd46/`. Una ejecución independiente de
+`backup.py verify` aprobó los seis. `backup.py restore-test` restauró cada
+respaldo lógico en un contenedor nuevo sin red y comparó tablas, conteos y
+hashes de registros. El manifiesto registró `status=complete`, seis nodos y
+`source_data_prepared_containers_unchanged=true`.
+
+El `db/qgis_smoke.py` de QGIS 3.44.15 abrió las 40 vistas, verificó EPSG:8908,
+geometrías válidas y 40 IDs únicos, y probó altas, cambios de atributos y
+geometría, bajas, réplica y rechazo de escrituras ajenas en las ocho capas.
+Tras limpiar los objetos temporales, volvió a comprobar el inventario.
+`qgis/pruebas/test_qgis.py` aprobó siete casos del complemento; omitió el caso
+de cuenta sin campus, que no se aprovisionó en esta instalación. Finalmente,
+`ops/wal.py check-preserved` confirmó que las filas protegidas, los montajes
+de los volúmenes originales y los demás contenedores se conservaron, y que no
+había 2PC pendiente. Los seis
+servicios quedaron `healthy` y el árbol Git permaneció limpio.
+
+Para repetir la validación PyQGIS sobre esta instalación, usar el proyecto
+Compose y el archivo de entorno originales:
+
+```powershell
+$env:QT_QPA_PLATFORM = 'offscreen'
+$env:SIG_TEC_ENTORNO = 'integracion'
+$env:SIG_TEC_PROYECTO_COMPOSE = 'iiiproyectobasesii'
+$env:SIG_TEC_ENV = (Resolve-Path .env).Path
+& 'C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat' db/qgis_smoke.py
+& 'C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat' qgis/pruebas/test_qgis.py
+```
+
+El perfil QGIS `sig_tec_main` contiene una copia comprobada de los 15 archivos
+del complemento de `main`. Se abre con
+`C:\Program Files\QGIS 3.44.15\bin\qgis-ltr.bat --profile sig_tec_main`.
+Allí aparece **Database > SIG-TEC > Iniciar sesión** y el diálogo propone
+`127.0.0.1:55430`, base `sig_tec`. El perfil `default` conserva una unión a un
+directorio temporal de la prueba anterior; usar `sig_tec_main` para la
+demostración. El 27 de noviembre Joseph completó el ingreso manual, la carga
+de ocho capas, el guardado de una edición propia y el rechazo de una ajena.
+También se verificaron el guardado local con el central detenido, el mensaje
+de indisponibilidad al intentar otro ingreso y el reingreso después de
+recuperar el central. Los valores originales se restauraron y la réplica se
+comprobó en los seis nodos. Ver [validación](../docs/validacion.md).
 
 ## Resultado de la prueba integrada
 

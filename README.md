@@ -14,11 +14,15 @@ Proyecto de Bases de Datos II del Tecnológico de Costa Rica. SIG-TEC permite co
 - [Enunciado del proyecto](Tercer%20Proyecto%20Enunciado.pdf).
 - [Diseño y modelo geográfico](docs/diseno.md). Topología, contratos de datos, replicación, acceso y operación administrativa.
 - [Pruebas y demostración](docs/validacion.md). Criterios de aceptación, recuperación, guion del video y pendientes del curso.
+- [Guion y ensayo del video](docs/guion-demostracion.md). Reparto de voz, objetivo de 9:20 y comandos para mostrar las evidencias.
 - [Reparto del trabajo](docs/reparto.md). Responsables, ramas, interfaces y entornos de prueba para empezar en paralelo.
 - [Base distribuida](db/README.md). Arranque de los seis nodos, cuentas de prueba y validación de ocho capas en cinco campus.
 - [Integración de componentes](db/INTEGRACION.md). Arranque conjunto, QGIS, 2PC, WAL, respaldos y PITR.
 
-La rama de integración valida primero SQL y después el complemento PyQGIS, el renombrado 2PC y la recuperación sobre las mismas seis bases.
+La integración se verificó con SQL, PyQGIS, renombrado 2PC y recuperación en
+un laboratorio de seis nodos. La instalación original de Joseph también pasó
+las pruebas de seis nodos, QGIS, WAL, respaldos y restauración lógica aislada;
+los resultados están en [Integración de componentes](db/INTEGRACION.md).
 
 ## Contribución
 
