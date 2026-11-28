@@ -115,12 +115,8 @@ comprobó mediante consultas SQL de solo lectura.
 | Guardado con el central detenido | Con la sesión de Cartago abierta se detuvo únicamente el servicio `central`. Desde QGIS se guardó para `id=1` el nombre `Biblioteca Cartago - prueba central detenido 27-11`. Cartago mostró el nuevo valor; los otros cuatro campus conservaron el anterior durante la caída. |
 | Nuevo acceso durante la caída | Al intentar iniciar sesión, el complemento mostró `El servidor central no está disponible en 127.0.0.1:55430. Intente de nuevo cuando se restablezca.` Las capas de la sesión anterior permanecieron en el proyecto. |
 | Convergencia al recuperar el central | Después de `docker compose -p iiiproyectobasesii up -d --wait central`, el nombre temporal se observó en los seis nodos. Las diez suscripciones y sus diez slots estaban activos, todas las relaciones estaban listas y no había transacciones preparadas. |
+| Reingreso después de la recuperación | Joseph volvió a pulsar `Iniciar sesión` con el central restablecido. El diálogo cerró y QGIS cargó de nuevo las ocho capas de `SIG-TEC · Cartago`, en EPSG:8908, con el nombre original del edificio. Se cerraron los avisos conservados de la prueba anterior de edición ajena. |
 | Limpieza | Se restauró el nombre original a través de `sig.edificios` en Cartago por SQL bajo la identidad `demo_cartago`. Se comprobó el nombre original en los seis nodos, junto con cinco objetos en cada una de las ocho capas. |
-
-El reingreso visual después de recuperar el central está pendiente de completar
-en el diálogo abierto de QGIS. La convergencia de las bases ya se comprobó;
-el mensaje de error conserva el resultado del intento hecho durante la caída
-hasta que se pulse de nuevo `Iniciar sesión`.
 
 Esta ejecución visual cubrió la edición de atributos de `edificios` desde
 Cartago. El CRUD de las ocho capas y la validez de las geometrías se habían
