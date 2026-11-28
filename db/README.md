@@ -53,8 +53,9 @@ docker compose exec san_carlos psql -U postgres -d sig_tec -c 'SELECT subname, s
 Para la prueba de convergencia tras desconexión, detener San Carlos, insertar desde la vista de Cartago un edificio temporal y confirmar que aparece en el central. Arrancar San Carlos y sondear `sig.edificios` hasta que vea el mismo ID. Borrar después la fila desde Cartago y comprobar la baja en ambos destinos. Usar `docker compose stop san_carlos` y `docker compose start san_carlos`; detener un nodo no elimina su volumen ni sus slots.
 
 El ensayo reproducible para la instalación original ejecuta esa secuencia y
-otra con el central detenido. Requiere los seis servicios saludables, `.env`
-local y que no haya otras ediciones durante la prueba:
+otra con el central detenido. Requiere Python 3 con Psycopg 3 (dependencias en
+`ops/requirements.txt`), los seis servicios saludables, `.env` local y que no
+haya otras ediciones durante la prueba:
 
 ```powershell
 python -B db/outage_demo.py --scenario campus
@@ -72,6 +73,24 @@ Después, comprobar `pg_prepared_xacts`, suscripciones, slots y
 están en [outage-results.json](outage-results.json).
 Los tiempos de convergencia del informe empiezan después de que el nodo vuelve
 a `healthy`. El caso del central comprueba la edición SQL local; el rechazo de
-un nuevo inicio de sesión en la interfaz QGIS queda para la prueba visual.
+un nuevo inicio de sesión en la interfaz QGIS no forma parte del script. Esa
+comprobación se completó el 27 de noviembre y está documentada en el
+[PR #6](https://github.com/Pochonski/sig-tec-geodatos-distribuidos/pull/6).
+
+Para mostrar el estado actual sin modificar las bases, ejecutar desde la raíz
+en PowerShell, sustituyendo `central` por el campus que se quiera consultar:
+
+```powershell
+Get-Content -Raw -Encoding utf8 db/demo_lectura.sql | docker compose -p iiiproyectobasesii exec -T central psql -v ON_ERROR_STOP=1 -P pager=off -U postgres -d sig_tec
+```
+
+La consulta muestra las ocho capas, geometrías, IDs, edificios, tablas listas
+de las suscripciones, slots activos, estilos y transacciones preparadas. En
+el inventario de demostración se esperan cinco objetos por capa, 40 IDs
+distintos en total, ocho estilos y cero transacciones preparadas. Un nodo con
+datos propios adicionales puede tener más objetos; el conteo esperado de
+cinco corresponde a la semilla actual. Las tablas listas no miden por sí
+solas el retraso de replicación: para comprobar convergencia hay que comparar
+el ID y el valor editado en origen y destinos.
 
 La comprobación de que una **semilla eliminada no reaparece** requiere modificar una fila de muestra. Hacerla en una copia descartable de los volúmenes: guardar una fila propia en una tabla auxiliar, eliminarla de su tabla física, repetir `docker compose run --rm bootstrap` y verificar que sigue ausente en origen y destinos. Restaurar la fila desde la copia auxiliar y esperar la replicación si se desea conservar esa instalación. El marcador `sig.seed_aplicada` impide que el bootstrap vuelva a sembrarla. La repetición habitual de `db/smoke.sh` verifica los conteos y la estabilidad de las suscripciones sin eliminar semillas.
